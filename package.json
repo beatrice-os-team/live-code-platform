@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "express": "^4.21.2",
+    "express": "^5.1.0",
     "highlight.js": "^10.7.3",
     "marked": "^15.0.12"
   }
