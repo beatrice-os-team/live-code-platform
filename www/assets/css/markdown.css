@@ -1,0 +1,60 @@
+h1, h2, h3, h4, h5, h6 {
+  border-left: 0.35em solid #00ff08;
+  padding-left: 16px;
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+blockquote {
+  margin: 0;
+  padding: 0 1em;
+  border-left: 0.25em solid #005303;
+}
+
+ul, ol {
+  padding-left: 2em;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+ol li{
+  list-style-type:decimal;
+}
+ul li{
+    list-style-type:circle;
+}
+
+table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  word-break: normal;
+  word-break: keep-all;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0 0 16px;
+}
+
+th, td {
+  padding: 6px 13px;
+}
+
+th {
+  text-align: left;
+  font-weight: 600;
+}

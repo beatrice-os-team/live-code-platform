@@ -1,0 +1,30 @@
+let t1 = [1,2,3,4,5,6,7]
+
+# 前序遍历
+def preorder(tree, node):
+    if not tree[node]:
+        return
+    print('node:', node, ' ' , tree[node])
+    preorder(tree, node * 2 + 1)
+    preorder(tree, node * 2 + 2)
+# 中序遍历
+def inorder(tree, node):
+    if not tree[node]:
+        return
+    inorder(tree, node * 2 + 1)
+    print('node:', node, ' ' , tree[node])
+    inorder(tree, node * 2 + 2)
+# 后续遍历
+def postorder(tree, node):
+    if not tree[node]:
+        return
+    postorder(tree, node * 2 + 1)
+    postorder(tree, node * 2 + 2)
+    print('node:', node, ' ' , tree[node])
+
+print('--- preorder ---')
+preorder(t1, 0)
+print('--- inorder ---')
+inorder(t1, 0)
+print('--- postorder ---')
+postorder(t1, 0)

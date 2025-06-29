@@ -1,0 +1,11 @@
+import losu
+import math
+import time
+
+print('type losu is ',type(losu))
+print('type math is ',type(math))
+
+print('version: ', losu::version)
+print('abs test: ', math::abs(-1.2))
+print('PI is ', math::PI)
+print('today is ', time::year() , ' year ', time::month(), ' month ', time::day(), ' day')

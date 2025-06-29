@@ -1,0 +1,38 @@
+# 基类 people
+class people:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+# 派生类 chinese
+class chinese(people):
+    # 派生构造函数，自动调用基类构造函数
+    def __init__(self, name, age, sex):
+        self.sex = sex
+    # 新增成员函数
+    def print_info(self):
+        print("chinese:", self.name, ' ' , self.age, ' ', self.sex)        
+# 派生类 student
+class student(chinese):
+    # 派生构造函数，自动调用基类构造函数
+    def __init__(self, name, age, sex, score):
+        print('student:',name ,' arrive school')
+        self.score = score
+    # 新增成员函数
+    def print_info(self):
+        print("student:", self.name, ' ' , self.age, ' ', self.sex, ' ', self.score)
+
+    # 析构函数
+    def __del__(self):
+        print('student:',self.name, ' leave school')
+    # 重载运算符 
+    def __call__(self):
+        print('student:', self.name, ' call me')
+
+print('type student is ', type(student))
+let s1 = student('zhangsan', 18, 'male', 90)
+let s2 = student('lisi', 19, 'female', 80)
+s1.print_info()
+s2.print_info()
+s1()
+s2()
