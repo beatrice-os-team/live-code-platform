@@ -4,6 +4,10 @@
 [![Dependabot Updates](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/dependabot/dependabot-updates)
 [![CodeQL](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/github-code-scanning/codeql)
 
+## 初赛提交
+
+初赛所需的全部内容请点击[连接](https://github.com/beatrice-os-team#%E5%88%9D%E8%B5%9B%E9%98%B6%E6%AE%B5)，包括项目、源代码分析、设计方案、进展汇报幻灯片、作品演示视频。
+
 ## 使用方式
 
 1. 确保当前操作系统安装了 node 软件包。
