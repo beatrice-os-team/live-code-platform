@@ -53,11 +53,11 @@ var this_html = {
             let losu = await LosuLiveCode({
                 print(text) {
                     document.getElementById('editor-result').innerText +=
-                        `<span style="color:white">` + text + `</span>\n`;
+                        `<span style="color:white">` + text + `</span><br>`;
                 },
                 printErr(text) {
                     document.getElementById('editor-result').innerText +=
-                        `<span style="color:red">` + text + `</span>\n`;
+                        `<span style="color:red">` + text + `</span><br>`;
                 },
 
             });
