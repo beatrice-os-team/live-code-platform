@@ -1,6 +1,8 @@
 # 基于洛书（Losu）编程语言与 Web Assembly 的编译与OS演示系统
 
 [![Sync to GitLab](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/mirror.yml/badge.svg)](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/mirror.yml)
+[![Dependabot Updates](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/dependabot/dependabot-updates)
+[![CodeQL](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/github-code-scanning/codeql)
 
 ## 使用方式
 
