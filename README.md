@@ -1,5 +1,17 @@
 # 基于洛书（Losu）编程语言与 Web Assembly 的编译与OS演示系统
 
+[![Sync to GitLab](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/mirror.yml/badge.svg)](https://github.com/beatrice-os-team/live-code-platform/actions/workflows/mirror.yml)
+
+## 使用方式
+
+请先安装 node 软件包。
+
+```bash
+make run
+```
+
+访问 **http://localhost:8080**
+
 ## 关键词
 1. Web Assembly
     - 跨平台、可视化、高性能、云原生
