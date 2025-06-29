@@ -4,7 +4,15 @@
 
 ## 使用方式
 
-请先安装 node 软件包。
+1. 确保当前操作系统安装了 node 软件包。
+
+2. 安装 npm 依赖。
+
+```bash
+npm install
+```
+
+3. 运行。
 
 ```bash
 make run
