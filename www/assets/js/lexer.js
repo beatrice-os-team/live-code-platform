@@ -42,7 +42,7 @@ var this_html = {
     },
     editor_clear() {
         this.editor.setValue("");
-        document.getElementById('editor-result').innerText = "";
+        document.getElementById('editor-result').innerHTML = "";
 
     },
     async editor_run() {
@@ -53,27 +53,17 @@ var this_html = {
             });;
             let losu = await LosuLiveCode({
                 print(text) {
-                    document.getElementById('editor-result').innerText +=
+                    document.getElementById('editor-result').innerHTML +=
                         `<span style="color:white">` + text + `</span><br>`;
                 },
                 printErr(text) {
-                    document.getElementById('editor-result').innerText +=
+                    document.getElementById('editor-result').innerHTML +=
                         `<span style="color:red">` + text + `</span><br>`;
                 },
 
             });
             losu.ccall('run', [], ['string'], [this.editor.getValue()]);
             layui.layer.close(load);
-            layer.open({
-                type: 1,
-                shade: 0.5,
-                area: ['60%', '80%'], // 宽高
-                content: `<pre class ='editor-result' >` + document.getElementById('editor-result').innerText + `</pre>`,
-                title: "运行结果",
-                end() {
-                    document.getElementById('editor-result').innerText = "";
-                }
-            });
         } catch (e) {
             console.error(e);
         }

@@ -492,6 +492,16 @@ static void __losu_syntaxpar_next(losu_syntax_lex_t lex) {
   } else
     lex->tk.token =
         losu_syntax_lex_next(lex, (losu_syntax_tkvalue_t)(&(lex->tk.info)));
+    if (lex->tk.token >= 256) {
+      if (losu_syntax_keyword[lex->tk.token - 256].str != NULL) {
+        if (lex->tk.token == TOKEN_NUMBER)
+          printf("token: %-15svalue: %-30fline: %d\n", losu_syntax_keyword[lex->tk.token-256].str, lex->tk.info.num, lex->linenumber);
+        else if (lex->tk.token == TOKEN_STRING || lex->tk.token == TOKEN_NAME)
+          printf("token: %-15svalue: %-30sline: %d\n", losu_syntax_keyword[lex->tk.token-256].str, lex->tk.info.s->str, lex->linenumber);
+        else
+          printf("token: %-15svalue: %-30sline: %d\n", losu_syntax_keyword[lex->tk.token-256].str, "null", lex->linenumber);
+    }
+  }
 }
 
 #endif
