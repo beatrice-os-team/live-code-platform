@@ -1016,8 +1016,8 @@ a cite {
 
 .layui-main {
     position: relative;
-    width: 1160px;
-    margin: 0 auto
+    width: 60%;
+    margin-left: 20vw;
 }
 
 .layui-header {

@@ -1,0 +1,9 @@
+--------------------------------------------------------------------------------——----
+-- Losu Language: https://losu.tech                                                 --
+-- Build an open-source, efficient, and powerful programming language.              --
+--                                                                                  --
+-- SDK:                         https://gitee.com/chen-chaochen/lpk/                --
+-- Community:                   https://gitcode.com/losu-lang/                      --
+--                                                                                  --
+-- MIT License 2019 - now chen-chaochen                                             --
+--------------------------------------------------------------------------------——----

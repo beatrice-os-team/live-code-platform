@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang='zh-cn'>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compiler & OS DashBoard on WebAssembly</title>
+    <link rel="stylesheet" href="/assets/lib/layui@2.11.4/css/layui.css">
+    <link id="layui_theme" rel="stylesheet" href="/assets/lib/layui@2.11.4/css/layui-dark.css">
+    <link rel="stylesheet" href="/assets/lib/codemirror@5.65.18/lib/codemirror.css">
+    <link rel="stylesheet" href="/assets/lib/codemirror@5.65.18/theme/material-palenight.css">
+    <link rel="stylesheet" href="/assets/lib/codemirror@5.65.18/theme/solarized.css">
+
+    <link id="markdown_theme" rel="stylesheet" href="/assets/css/markdown.css">
+    <link id="highlight_theme" rel="stylesheet" href="/assets/lib/highlight@10.7.3/styles/atom-one-dark.css">
+
+    <link rel="stylesheet" href="/assets/css/sema.css">
+
+</head>
+
+<body>
+
+    <div class="layui-nav layui-nav-child-l " style="background-color: rgb(41, 46, 80);">
+        <li class="layui-nav-item layui-this">
+            <a href="javascript:;" class="layui-icon layui-icon-fonts-code">Live Code</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;" class="layui-icon layui-icon-read" lay-on="iframe">参考手册</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:this_html.editor_run();" class="layui-icon layui-icon-play">运行代码</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:this_html.editor_clear();" class="layui-icon layui-icon-clear">清空代码</a>
+        </li>
+
+        <li class="layui-nav-item">
+            <a href="javascript:location.reload(true);" class="layui-icon layui-icon-refresh-3">刷新页面</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;" class="layui-icon layui-icon-fonts-code">示例代码</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:this_html.loadscript('sema-demo1.els');">样例1</a>
+                    <a href="javascript:this_html.loadscript('sema-demo2.els');">样例2</a>
+                </dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item ">
+            <a href="javascript:this_html.toggle_theme();" id='layui_theme_btn'
+                class="layui-icon layui-icon-theme">切换主题</a>
+        </li>
+    </div>
+    <div class="editor">
+        <div class="editor-code">
+            <textarea id="editor-code"></textarea>
+        </div>
+        <div class="editor-result">hello</div>
+        <pre id="editor-result" style="display: none;" ></pre>
+
+    </div>
+
+
+
+
+</body>
+<script src="/assets/lib/layui@2.11.4/layui.js"></script>
+<script src="/assets/lib/raf@1.0.0/raf.js"></script>
+<script src="/assets/lib/codemirror@5.65.18/lib/codemirror.js"></script>
+<script src="/assets/lib/codemirror@5.65.18/mode/ec2/ec2.js"></script>
+<script src="/assets/lib/codemirror@5.65.18/addon/lint/lint.js"></script>
+<script src="/assets/lib/codemirror@5.65.18/addon/hint/show-hint.js"></script>
+
+<script src="/assets/wasm/sema.m.js"></script>
+<script src="/assets/js/sema.js"></script>
+
+
+</html>

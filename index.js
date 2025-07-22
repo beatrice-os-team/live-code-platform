@@ -7,6 +7,12 @@ const hljs = require('highlight.js'); // 引入 highlight.js
 const app = express();
 const PORT = 8080;
 
+app.post('/api/markdown', function (req, res) {
+  const  markdown  = req.body;
+  console.log(markdown);
+  res.send('ok');
+});
+
 app.get('*.md', (req, res) => {
   try {
     const filePath = req.path;
@@ -14,8 +20,8 @@ app.get('*.md', (req, res) => {
     const renderer = new marked.Renderer();
     renderer.code = function (code) {
       const validLanguage = hljs.getLanguage(code.lang) ? code.lang : 'plaintext';
-      if(validLanguage === 'losu')
-          validLanguage = 'python';
+      if (validLanguage === 'losu')
+        validLanguage = 'python';
       const highlightedCode = hljs.highlight(code.text, { language: validLanguage }).value;
       return `<fieldset class="layui-elem-field"><pre><code class="layui-field-box hljs ${validLanguage}">${highlightedCode}</code></pre></fieldset>`;
     };
