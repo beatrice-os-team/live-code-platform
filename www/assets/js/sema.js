@@ -43,39 +43,79 @@ var this_html = {
     editor_clear() {
         this.editor.setValue("");
         document.getElementById('editor-result').innerHTML = "";
-
     },
     async editor_run() {
         try {
-            let load = layui.layer.msg('代码运行中 ... ', {
+            let load = layui.layer.msg('语义分析进行中 ... ', {
                 icon: 16,
                 shade: 0.01
-            });;
-            let losu = await LosuLiveCode({
-                print(text) {
-                    document.getElementById('editor-result').innerHTML +=
-                        `<span style="color:white">` + text + `</span><br>`;
-                },
-                printErr(text) {
-                    document.getElementById('editor-result').innerHTML +=
-                        `<span style="color:red">` + text + `</span><br>`;
-                },
-
             });
-            losu.ccall('run', [], ['string'], [this.editor.getValue()]);
+            
+            // 获取输入代码
+            const inputCode = this.editor.getValue();
+            if (!inputCode.trim()) {
+                document.getElementById('editor-result').innerHTML = 
+                    `<span style="color:orange">请输入一些代码进行语义分析</span><br>`;
+                layui.layer.close(load);
+                return;
+            }
+            
+            // 清空之前的结果
+            document.getElementById('editor-result').innerHTML = '';
+            
+            // 使用语义分析演示模块
+            let losuModule = window.LosuSemaModule;
+            if (!losuModule) {
+                // 尝试加载语义分析WASM模块
+                if (typeof LosuLiveCode === 'undefined') {
+                    document.getElementById('editor-result').innerHTML += 
+                        `<span style="color:red">WASM模块未加载，请刷新页面重试</span><br>`;
+                    layui.layer.close(load);
+                    return;
+                }
+                
+                losuModule = await LosuLiveCode({
+                    print(text) {
+                        document.getElementById('editor-result').innerHTML +=
+                            `<span style="color:white">` + text + `</span><br>`;
+                    },
+                    printErr(text) {
+                        document.getElementById('editor-result').innerHTML +=
+                            `<span style="color:red">` + text + `</span><br>`;
+                    },
+                });
+                
+                // 缓存模块以供后续使用
+                window.LosuSemaModule = losuModule;
+            }
+            
+            // 调用语义分析演示函数
+            if (losuModule && losuModule.ccall && typeof losuModule.ccall === 'function') {
+                try {
+                    // 尝试调用专门的语义分析函数
+                    losuModule.ccall('sema_demo', null, ['string'], [inputCode]);
+                } catch (semaError) {
+                    console.warn('sema_demo函数不可用，使用通用运行函数:', semaError);
+                    try {
+                        // 回退到通用运行函数
+                        losuModule.ccall('run', null, ['string'], [inputCode]);
+                    } catch (runError) {
+                        console.error('运行失败:', runError);
+                        document.getElementById('editor-result').innerHTML += 
+                            `<span style="color:red">运行失败: ${runError.message}</span><br>`;
+                    }
+                }
+            } else {
+                document.getElementById('editor-result').innerHTML += 
+                    `<span style="color:red">WASM模块函数不可用，请检查模块是否正确加载</span><br>`;
+            }
+            
             layui.layer.close(load);
-            // layer.open({
-            //     type: 1,
-            //     shade: 0.5,
-            //     area: ['60%', '80%'], // 宽高
-            //     content: `<pre class ='editor-result' >` + document.getElementById('editor-result').innerText + `</pre>`,
-            //     title: "运行结果",
-            //     end() {
-            //         document.getElementById('editor-result').innerText = "";
-            //     }
-            // });
         } catch (e) {
-            console.error(e);
+            console.error('语义分析出错:', e);
+            document.getElementById('editor-result').innerHTML += 
+                `<span style="color:red">语义分析出错: ${e.message}</span><br>`;
+            layui.layer.close(load);
         }
     },
     async loadscript(url) {
@@ -90,13 +130,8 @@ var this_html = {
             this.editor.setValue("# 导入出错\n");
             console.error(error);
         }
-
     },
-
 };
-
-
-
 
 layui.util.on('lay-on', {
     iframe: async function () {
@@ -114,15 +149,13 @@ layui.util.on('lay-on', {
                 area: ['60%', '80%'], // 宽高
                 shade: 0.5,
                 content: text,
-                title: "   "
+                title: "语义分析说明"
             });
         } catch (e) {
             console.error(e);
         }
-
     },
 });
-
 
 (async () => {
     let res = await fetch('/api/markdown', {
@@ -130,6 +163,6 @@ layui.util.on('lay-on', {
         headers: {
             'Content-Type': 'plain/text'
         },
-        content: "# 你好 \n你好我的朋友"
+        content: "# 语义分析演示 \n使用Losu语言进行语义分析"
     });
 })();

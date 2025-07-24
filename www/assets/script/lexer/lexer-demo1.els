@@ -1,39 +1,13 @@
-class Io:
-    def __init__(self):
-        self.queue = []
-        self.startptr = 0
-        self.endptr = 0
-    def isempty(self):
-        return self.startptr == self.endptr
-    def push(self, item):
-        self.queue[self.endptr] = item
-        self.endptr = self.endptr + 1
-    def pop(self):
-        if not self.isempty():
-            let item = self.queue[self.startptr]
-            self.startptr = self.startptr + 1
-            return item
-        return false
+def greet(name):
+    let message = "Hello, " + name + "!"
+    print(message)
+    return message
 
-# 生产者 - 消费者模型
-def producer(io, id, f):
-    for i in 1,10:
-        io.push('producer: ' & str(id) & '(' & str(i) & ')=' & str(f(i)))
-        yield
+let user = "World"
+greet(user)
 
-def customer(io, id):
-    for i in 1,10:
-        if not io.isempty():
-            print('customer: ', id, ':', io.pop())
-        yield
-
-
-let io = Io()
-
-async producer(io, 1, lambda x: x*x)
-async producer(io, 2, lambda x: x*2)
-async producer(io, 3, lambda x: x**3)
-
-async customer(io, 1)
-async customer(io, 2)
+if user == "World":
+    print("欢迎来到词法分析演示！")
+else:
+    print("你好，" + user)
 
