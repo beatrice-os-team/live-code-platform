@@ -67,14 +67,14 @@ var this_html = {
             let losuModule = window.LosuSemaModule;
             if (!losuModule) {
                 // 尝试加载语义分析WASM模块
-                if (typeof LosuLiveCode === 'undefined') {
+                if (typeof LosuSema === 'undefined') {
                     document.getElementById('editor-result').innerHTML += 
                         `<span style="color:red">WASM模块未加载，请刷新页面重试</span><br>`;
                     layui.layer.close(load);
                     return;
                 }
                 
-                losuModule = await LosuLiveCode({
+                losuModule = await LosuSema({
                     print(text) {
                         document.getElementById('editor-result').innerHTML +=
                             `<span style="color:white">` + text + `</span><br>`;
@@ -89,16 +89,28 @@ var this_html = {
                 window.LosuSemaModule = losuModule;
             }
             
-            // 调用语义分析演示函数
-            if (losuModule && losuModule.ccall && typeof losuModule.ccall === 'function') {
+            // 直接调用导出的函数
+            if (losuModule && losuModule._sema_demo) {
                 try {
-                    // 尝试调用专门的语义分析函数
-                    losuModule.ccall('sema_demo', null, ['string'], [inputCode]);
+                    // 手动分配内存并转换字符串
+                    const strLen = losuModule.lengthBytesUTF8(inputCode) + 1;
+                    const strPtr = losuModule._malloc(strLen);
+                    losuModule.stringToUTF8(inputCode, strPtr, strLen);
+                    
+                    // 调用语义分析演示函数
+                    losuModule._sema_demo(strPtr);
+                    
+                    // 释放内存
+                    losuModule._free(strPtr);
                 } catch (semaError) {
-                    console.warn('sema_demo函数不可用，使用通用运行函数:', semaError);
+                    console.warn('sema_demo函数调用失败，使用通用运行函数:', semaError);
                     try {
                         // 回退到通用运行函数
-                        losuModule.ccall('run', null, ['string'], [inputCode]);
+                        const strLen = losuModule.lengthBytesUTF8(inputCode) + 1;
+                        const strPtr = losuModule._malloc(strLen);
+                        losuModule.stringToUTF8(inputCode, strPtr, strLen);
+                        losuModule._run(strPtr);
+                        losuModule._free(strPtr);
                     } catch (runError) {
                         console.error('运行失败:', runError);
                         document.getElementById('editor-result').innerHTML += 

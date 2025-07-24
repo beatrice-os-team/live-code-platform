@@ -65,17 +65,17 @@ var this_html = {
             document.getElementById('editor-result').innerHTML = '';
             
             // 使用词法分析演示模块
-            let losuModule = window.LosuModule;
+            let losuModule = window.LosuLexerModule;
             if (!losuModule) {
                 // 尝试加载词法分析WASM模块
-                if (typeof LosuLiveCode === 'undefined') {
+                if (typeof LosuLexer === 'undefined') {
                     document.getElementById('editor-result').innerHTML += 
                         `<span style="color:red">WASM模块未加载，请刷新页面重试</span><br>`;
                     layui.layer.close(load);
                     return;
                 }
                 
-                losuModule = await LosuLiveCode({
+                losuModule = await LosuLexer({
                     print(text) {
                         document.getElementById('editor-result').innerHTML +=
                             `<span style="color:white">` + text + `</span><br>`;
@@ -87,19 +87,31 @@ var this_html = {
                 });
                 
                 // 缓存模块以供后续使用
-                window.LosuModule = losuModule;
+                window.LosuLexerModule = losuModule;
             }
             
-            // 调用词法分析演示函数
-            if (losuModule && losuModule.ccall && typeof losuModule.ccall === 'function') {
+            // 直接调用导出的函数
+            if (losuModule && losuModule._lexer_demo) {
                 try {
-                    // 尝试调用专门的词法分析函数
-                    losuModule.ccall('lexer_demo', null, ['string'], [inputCode]);
+                    // 手动分配内存并转换字符串
+                    const strLen = losuModule.lengthBytesUTF8(inputCode) + 1;
+                    const strPtr = losuModule._malloc(strLen);
+                    losuModule.stringToUTF8(inputCode, strPtr, strLen);
+                    
+                    // 调用词法分析演示函数
+                    losuModule._lexer_demo(strPtr);
+                    
+                    // 释放内存
+                    losuModule._free(strPtr);
                 } catch (lexerError) {
-                    console.warn('lexer_demo函数不可用，使用通用运行函数:', lexerError);
+                    console.warn('lexer_demo函数调用失败，使用通用运行函数:', lexerError);
                     try {
                         // 回退到通用运行函数
-                        losuModule.ccall('run', null, ['string'], [inputCode]);
+                        const strLen = losuModule.lengthBytesUTF8(inputCode) + 1;
+                        const strPtr = losuModule._malloc(strLen);
+                        losuModule.stringToUTF8(inputCode, strPtr, strLen);
+                        losuModule._run(strPtr);
+                        losuModule._free(strPtr);
                     } catch (runError) {
                         console.error('运行失败:', runError);
                         document.getElementById('editor-result').innerHTML += 

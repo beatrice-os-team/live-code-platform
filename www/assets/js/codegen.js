@@ -67,14 +67,14 @@ var this_html = {
             let losuModule = window.LosuCodegenModule;
             if (!losuModule) {
                 // 尝试加载代码生成WASM模块
-                if (typeof LosuLiveCode === 'undefined') {
+                if (typeof LosuCodegen === 'undefined') {
                     document.getElementById('editor-result').innerHTML += 
                         `<span style="color:red">WASM模块未加载，请刷新页面重试</span><br>`;
                     layui.layer.close(load);
                     return;
                 }
                 
-                losuModule = await LosuLiveCode({
+                losuModule = await LosuCodegen({
                     print(text) {
                         document.getElementById('editor-result').innerHTML +=
                             `<span style="color:white">` + text + `</span><br>`;
@@ -89,16 +89,28 @@ var this_html = {
                 window.LosuCodegenModule = losuModule;
             }
             
-            // 调用代码生成演示函数
-            if (losuModule && losuModule.ccall && typeof losuModule.ccall === 'function') {
+            // 直接调用导出的函数
+            if (losuModule && losuModule._codegen_demo) {
                 try {
-                    // 尝试调用专门的代码生成函数
-                    losuModule.ccall('codegen_demo', null, ['string'], [inputCode]);
+                    // 手动分配内存并转换字符串
+                    const strLen = losuModule.lengthBytesUTF8(inputCode) + 1;
+                    const strPtr = losuModule._malloc(strLen);
+                    losuModule.stringToUTF8(inputCode, strPtr, strLen);
+                    
+                    // 调用代码生成演示函数
+                    losuModule._codegen_demo(strPtr);
+                    
+                    // 释放内存
+                    losuModule._free(strPtr);
                 } catch (codegenError) {
-                    console.warn('codegen_demo函数不可用，使用通用运行函数:', codegenError);
+                    console.warn('codegen_demo函数调用失败，使用通用运行函数:', codegenError);
                     try {
                         // 回退到通用运行函数
-                        losuModule.ccall('run', null, ['string'], [inputCode]);
+                        const strLen = losuModule.lengthBytesUTF8(inputCode) + 1;
+                        const strPtr = losuModule._malloc(strLen);
+                        losuModule.stringToUTF8(inputCode, strPtr, strLen);
+                        losuModule._run(strPtr);
+                        losuModule._free(strPtr);
                     } catch (runError) {
                         console.error('运行失败:', runError);
                         document.getElementById('editor-result').innerHTML += 

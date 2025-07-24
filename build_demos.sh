@@ -8,9 +8,6 @@ if ! command -v emcc &> /dev/null; then
     exit 1
 fi
 
-# 设置编译标志
-EMCC_FLAGS="-O2 -s WASM=1 -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] -s ALLOW_MEMORY_GROWTH=1 -s MODULARIZE=1 -s EXPORT_NAME=LosuLiveCode"
-
 # 记录当前目录
 SCRIPT_DIR=$(pwd)
 
@@ -20,7 +17,12 @@ cd losu/lexer
 INCLUDE_DIRS="-I ../include"
 # 获取所有源文件，排除重复的.core.dtc.c文件
 LOSU_SRC_FILES=$(find ../losu -name "*.c" | grep -v "\.core\.dtc\.c" | tr '\n' ' ')
-emcc main.c ${LOSU_SRC_FILES} ${INCLUDE_DIRS} ${EMCC_FLAGS} -o ../../www/assets/wasm/lexer.m.js
+emcc main.c ${LOSU_SRC_FILES} ${INCLUDE_DIRS} \
+     -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s EXPORT_NAME="LosuLexer" \
+     -s EXPORTED_FUNCTIONS="['_lexer_demo', '_run', '_malloc', '_free']" \
+     -s EXPORTED_RUNTIME_METHODS="['lengthBytesUTF8', 'stringToUTF8']" \
+     -s ALLOW_MEMORY_GROWTH=1 \
+     -o ../../www/assets/wasm/lexer.m.js
 if [ $? -eq 0 ]; then
     echo "   ✓ 词法分析模块编译完成"
 else
@@ -32,7 +34,12 @@ echo "2. 编译语法分析模块..."
 cd losu/parser
 INCLUDE_DIRS="-I ../include"
 LOSU_SRC_FILES=$(find ../losu -name "*.c" | grep -v "\.core\.dtc\.c" | tr '\n' ' ')
-emcc main.c ${LOSU_SRC_FILES} ${INCLUDE_DIRS} ${EMCC_FLAGS} -o ../../www/assets/wasm/parser.m.js
+emcc main.c ${LOSU_SRC_FILES} ${INCLUDE_DIRS} \
+     -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s EXPORT_NAME="LosuParser" \
+     -s EXPORTED_FUNCTIONS="['_parser_demo', '_run', '_malloc', '_free']" \
+     -s EXPORTED_RUNTIME_METHODS="['lengthBytesUTF8', 'stringToUTF8']" \
+     -s ALLOW_MEMORY_GROWTH=1 \
+     -o ../../www/assets/wasm/parser.m.js
 if [ $? -eq 0 ]; then
     echo "   ✓ 语法分析模块编译完成"
 else
@@ -44,7 +51,12 @@ echo "3. 编译语义分析模块..."
 cd losu/sema
 INCLUDE_DIRS="-I ../include"
 LOSU_SRC_FILES=$(find ../losu -name "*.c" | grep -v "\.core\.dtc\.c" | tr '\n' ' ')
-emcc main.c ${LOSU_SRC_FILES} ${INCLUDE_DIRS} ${EMCC_FLAGS} -o ../../www/assets/wasm/sema.m.js
+emcc main.c ${LOSU_SRC_FILES} ${INCLUDE_DIRS} \
+     -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s EXPORT_NAME="LosuSema" \
+     -s EXPORTED_FUNCTIONS="['_sema_demo', '_run', '_malloc', '_free']" \
+     -s EXPORTED_RUNTIME_METHODS="['lengthBytesUTF8', 'stringToUTF8']" \
+     -s ALLOW_MEMORY_GROWTH=1 \
+     -o ../../www/assets/wasm/sema.m.js
 if [ $? -eq 0 ]; then
     echo "   ✓ 语义分析模块编译完成"
 else
@@ -56,7 +68,12 @@ echo "4. 编译代码生成模块..."
 cd losu/codegen
 INCLUDE_DIRS="-I ../include"
 LOSU_SRC_FILES=$(find ../losu -name "*.c" | grep -v "\.core\.dtc\.c" | tr '\n' ' ')
-emcc main.c ${LOSU_SRC_FILES} ${INCLUDE_DIRS} ${EMCC_FLAGS} -o ../../www/assets/wasm/codegen.m.js
+emcc main.c ${LOSU_SRC_FILES} ${INCLUDE_DIRS} \
+     -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s EXPORT_NAME="LosuCodegen" \
+     -s EXPORTED_FUNCTIONS="['_codegen_demo', '_run', '_malloc', '_free']" \
+     -s EXPORTED_RUNTIME_METHODS="['lengthBytesUTF8', 'stringToUTF8']" \
+     -s ALLOW_MEMORY_GROWTH=1 \
+     -o ../../www/assets/wasm/codegen.m.js
 if [ $? -eq 0 ]; then
     echo "   ✓ 代码生成模块编译完成"
 else
