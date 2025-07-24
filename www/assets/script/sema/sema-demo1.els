@@ -37,3 +37,23 @@ async producer(io, 3, lambda x: x**3)
 async customer(io, 1)
 async customer(io, 2)
 
+
+def calculate_area(length, width):
+    let area = length * width
+    return area
+
+def calculate_volume(length, width, height):
+    let base_area = calculate_area(length, width)
+    let volume = base_area * height
+    return volume
+
+let room_length = 10.5
+let room_width = 8.0
+let room_height = 3.0
+
+let floor_area = calculate_area(room_length, room_width)
+let room_volume = calculate_volume(room_length, room_width, room_height)
+
+print("房间面积: " + str(floor_area) + " 平方米")
+print("房间体积: " + str(room_volume) + " 立方米")
+

@@ -37,3 +37,22 @@ async producer(io, 3, lambda x: x**3)
 async customer(io, 1)
 async customer(io, 2)
 
+
+def fibonacci(n):
+    if n <= 1:
+        return n
+    else:
+        return fibonacci(n-1) + fibonacci(n-2)
+
+def main():
+    let count = 10
+    for i in range(count):
+        let result = fibonacci(i)
+        print("fibonacci(" + str(i) + ") = " + str(result))
+        
+    while count > 0:
+        count = count - 1
+        print("倒计时: " + str(count))
+
+main()
+

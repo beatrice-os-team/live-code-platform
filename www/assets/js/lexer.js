@@ -47,25 +47,88 @@ var this_html = {
     },
     async editor_run() {
         try {
-            let load = layui.layer.msg('代码运行中 ... ', {
+            let load = layui.layer.msg('词法分析进行中 ... ', {
                 icon: 16,
                 shade: 0.01
-            });;
-            let losu = await LosuLiveCode({
-                print(text) {
-                    document.getElementById('editor-result').innerHTML +=
-                        `<span style="color:white">` + text + `</span><br>`;
-                },
-                printErr(text) {
-                    document.getElementById('editor-result').innerHTML +=
-                        `<span style="color:red">` + text + `</span><br>`;
-                },
-
             });
-            losu.ccall('run', [], ['string'], [this.editor.getValue()]);
+            
+            // 获取输入代码
+            const inputCode = this.editor.getValue();
+            if (!inputCode.trim()) {
+                document.getElementById('editor-result').innerHTML = 
+                    `<span style="color:orange">请输入一些代码进行词法分析</span><br>`;
+                layui.layer.close(load);
+                return;
+            }
+            
+            // 清空之前的结果
+            document.getElementById('editor-result').innerHTML = '';
+            
+            // 使用词法分析演示模块
+            let losuModule = window.LosuLexerModule;
+            if (!losuModule) {
+                // 尝试加载词法分析WASM模块
+                if (typeof LosuLexer === 'undefined') {
+                    document.getElementById('editor-result').innerHTML += 
+                        `<span style="color:red">WASM模块未加载，请刷新页面重试</span><br>`;
+                    layui.layer.close(load);
+                    return;
+                }
+                
+                losuModule = await LosuLexer({
+                    print(text) {
+                        document.getElementById('editor-result').innerHTML +=
+                            `<span style="color:white">` + text + `</span><br>`;
+                    },
+                    printErr(text) {
+                        document.getElementById('editor-result').innerHTML +=
+                            `<span style="color:red">` + text + `</span><br>`;
+                    },
+                });
+                
+                // 缓存模块以供后续使用
+                window.LosuLexerModule = losuModule;
+            }
+            
+            // 直接调用导出的函数
+            if (losuModule && losuModule._lexer_demo) {
+                try {
+                    // 手动分配内存并转换字符串
+                    const strLen = losuModule.lengthBytesUTF8(inputCode) + 1;
+                    const strPtr = losuModule._malloc(strLen);
+                    losuModule.stringToUTF8(inputCode, strPtr, strLen);
+                    
+                    // 调用词法分析演示函数
+                    losuModule._lexer_demo(strPtr);
+                    
+                    // 释放内存
+                    losuModule._free(strPtr);
+                } catch (lexerError) {
+                    console.warn('lexer_demo函数调用失败，使用通用运行函数:', lexerError);
+                    try {
+                        // 回退到通用运行函数
+                        const strLen = losuModule.lengthBytesUTF8(inputCode) + 1;
+                        const strPtr = losuModule._malloc(strLen);
+                        losuModule.stringToUTF8(inputCode, strPtr, strLen);
+                        losuModule._run(strPtr);
+                        losuModule._free(strPtr);
+                    } catch (runError) {
+                        console.error('运行失败:', runError);
+                        document.getElementById('editor-result').innerHTML += 
+                            `<span style="color:red">运行失败: ${runError.message}</span><br>`;
+                    }
+                }
+            } else {
+                document.getElementById('editor-result').innerHTML += 
+                    `<span style="color:red">WASM模块函数不可用，请检查模块是否正确加载</span><br>`;
+            }
+            
             layui.layer.close(load);
         } catch (e) {
-            console.error(e);
+            console.error('词法分析出错:', e);
+            document.getElementById('editor-result').innerHTML += 
+                `<span style="color:red">词法分析出错: ${e.message}</span><br>`;
+            layui.layer.close(load);
         }
     },
     async loadscript(url) {
@@ -80,13 +143,8 @@ var this_html = {
             this.editor.setValue("# 导入出错\n");
             console.error(error);
         }
-
     },
-
 };
-
-
-
 
 layui.util.on('lay-on', {
     iframe: async function () {
@@ -104,15 +162,13 @@ layui.util.on('lay-on', {
                 area: ['60%', '80%'], // 宽高
                 shade: 0.5,
                 content: text,
-                title: "   "
+                title: "词法分析说明"
             });
         } catch (e) {
             console.error(e);
         }
-
     },
 });
-
 
 (async () => {
     let res = await fetch('/api/markdown', {
@@ -120,6 +176,6 @@ layui.util.on('lay-on', {
         headers: {
             'Content-Type': 'plain/text'
         },
-        content: "# 你好 \n你好我的朋友"
+        content: "# 词法分析演示 \n使用Losu语言进行词法分析"
     });
 })();
