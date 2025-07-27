@@ -20,44 +20,73 @@
 
 <body>
 
-    <div class="layui-nav layui-nav-child-l " style="background-color: rgb(41, 46, 80);">
-        <li class="layui-nav-item layui-this">
-            <a href="javascript:;" class="layui-icon layui-icon-fonts-code">Live Code</a>
+    <div class="layui-nav layui-nav-tree  layui-nav-side  layui-nav-child-c "
+        style="background-color: rgb(41, 46, 80);">
+        <hr class="layui-border-green">
+        <li class="layui-nav-item"><a href="/index.html">首页</a></li>
+        <li class="layui-nav-item"><a href="/pages/editor.html" target="_blank" class="layui-icon layui-icon-fonts-code">Live
+                Code</a>
         </li>
-        <li class="layui-nav-item">
-            <a href="javascript:;" class="layui-icon layui-icon-read" lay-on="iframe">参考手册</a>
-        </li>
-        <li class="layui-nav-item">
-            <a href="javascript:this_html.editor_run();" class="layui-icon layui-icon-play">运行代码</a>
-        </li>
-        <li class="layui-nav-item">
-            <a href="javascript:this_html.editor_clear();" class="layui-icon layui-icon-clear">清空代码</a>
-        </li>
-
-        <li class="layui-nav-item">
-            <a href="javascript:location.reload(true);" class="layui-icon layui-icon-refresh-3">刷新页面</a>
-        </li>
-        <li class="layui-nav-item">
-            <a href="javascript:;" class="layui-icon layui-icon-fonts-code">示例代码</a>
+        <li class="layui-nav-item layui-nav-itemed">
+            <a href="javascript:;">编译演示</a>
             <dl class="layui-nav-child">
-                <dd>
-                    <a href="javascript:this_html.loadscript('parser-demo1.els');">样例1</a>
-                    <a href="javascript:this_html.loadscript('parser-demo2.els');">样例2</a>
-                </dd>
+                <dd><a href="./lexer.html">词法分析</a></dd>
+                <dd class="layui-this"><a href="./parser.html">语法分析</a></dd>
+                <dd><a href="./sema.html">语义分析</a></dd>
+                <dd><a href="./codegen.html">代码生成</a></dd>
             </dl>
         </li>
-        <li class="layui-nav-item ">
-            <a href="javascript:this_html.toggle_theme();" id='layui_theme_btn'
-                class="layui-icon layui-icon-theme">切换主题</a>
+        <li class="layui-nav-item">
+            <a href="javascript:;">OS演示</a>
+            <dl class="layui-nav-child">
+                <dd><a href="javascript:layui.layer.msg('正在开发中...') ;">内存管理</a></dd>
+                <dd><a href="javascript:layui.layer.msg('正在开发中...') ;">文件系统</a></dd>
+                <dd><a href="javascript:layui.layer.msg('正在开发中...') ;">中断处理</a></dd>
+                <dd><a href="javascript:layui.layer.msg('正在开发中...') ;">线程调度</a></dd>
+            </dl>
         </li>
+        <li class="layui-nav-item "><a href="javascript:this_html.toggle_theme();" id='layui_theme_btn'
+                class="layui-icon layui-icon-theme">切换主题</a></li>
+        <hr class="layui-border-green">
+        <li class="layui-nav-title layui-font-green"> 关于我们 </li>
+
     </div>
-    <div class="editor">
-        <div class="editor-code">
-            <textarea id="editor-code"></textarea>
-        </div>
-        <div class="editor-result">hello
-         <pre id="editor-result"  ></pre>  <!--style="display: none;" -->
+    <div class="layui-main">
+        <!-- 内容主体区域 -->
+        <div class="layui-card" style="min-height: 100vh;">
+            <div class="layui-card-header">
+                <div class="layui-breadcrumb">
+                    <a href="/index.html">首页</a>
+                    <a><cite>编译演示</cite></a>
+                    <a><cite>语法分析</cite></a>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="layui-btn layui-btn-sm" onclick="this_html.editor_run();">
+                        <i class="layui-icon layui-icon-play"></i> 运行代码
+                    </button>
+                    <button class="layui-btn layui-btn-sm layui-btn-primary" onclick="this_html.editor_clear();">
+                        <i class="layui-icon layui-icon-clear"></i> 清空代码
+                    </button>
+                    <button class="layui-btn layui-btn-sm layui-btn-primary" onclick="location.reload(true);">
+                        <i class="layui-icon layui-icon-refresh-3"></i> 刷新页面
+                    </button>
+                    <div class="layui-btn-group">
+                        <button class="layui-btn layui-btn-sm layui-btn-primary" onclick="this_html.loadscript('parser-demo1.els');">样例1</button>
+                        <button class="layui-btn layui-btn-sm layui-btn-primary" onclick="this_html.loadscript('parser-demo2.els');">样例2</button>
+                    </div>
+                </div>
             </div>
+            <div class="layui-card-body">
+                <div class="editor">
+                    <div class="editor-code">
+                        <textarea id="editor-code"></textarea>
+                    </div>
+                    <div class="editor-result">
+                        <pre id="editor-result"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
