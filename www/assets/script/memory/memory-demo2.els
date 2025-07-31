@@ -1,0 +1,68 @@
+# 垃圾回收示例
+# 这个示例创建大量对象来触发垃圾回收机制
+
+def create_large_objects():
+    print("创建大量对象以触发垃圾回收...")
+    
+    # 创建多个大数组
+    let arrays = []
+    
+    for i in range(20):
+        # 创建包含大量元素的数组
+        let large_array = []
+        for j in range(100):
+            large_array.push(i * 100 + j)
+        
+        arrays.push(large_array)
+        
+        if i % 5 == 0:
+            print("已创建 " + str(i + 1) + " 个大数组")
+    
+    return arrays
+
+def create_string_objects():
+    print("创建大量字符串对象...")
+    
+    let strings = []
+    
+    for i in range(50):
+        let long_string = "这是第" + str(i) + "个字符串，包含重复内容：" + 
+                         "重复" * 10 + "内容" + str(i)
+        strings.push(long_string)
+        
+        if i % 10 == 0:
+            print("已创建 " + str(i + 1) + " 个字符串")
+    
+    return strings
+
+def garbage_collection_test():
+    print("=== 垃圾回收演示开始 ===")
+    
+    # 第一阶段：创建大量数组对象
+    let phase1 = create_large_objects()
+    print("第一阶段完成：大数组创建")
+    
+    # 第二阶段：创建大量字符串对象
+    let phase2 = create_string_objects()
+    print("第二阶段完成：字符串创建")
+    
+    # 第三阶段：创建嵌套对象
+    print("创建嵌套对象结构...")
+    let complex_structure = {
+        "arrays": phase1,
+        "strings": phase2,
+        "metadata": {
+            "created_at": "2024",
+            "type": "gc_test",
+            "size": len(phase1) + len(phase2)
+        }
+    }
+    
+    print("嵌套对象创建完成")
+    print("=== 垃圾回收演示完成 ===")
+    
+    return complex_structure
+
+# 执行垃圾回收测试
+let result = garbage_collection_test()
+print("测试结束，观察垃圾回收过程...")
