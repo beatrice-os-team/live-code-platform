@@ -1,0 +1,36 @@
+# 内存分配示例
+# 这个示例演示基本的内存分配和变量创建
+
+def memory_allocation_test():
+    # 创建不同类型的变量，观察内存分配
+    print("开始内存分配测试...")
+    
+    # 创建数字变量
+    let num1 = 42
+    let num2 = 3.14159
+    let num3 = 1024
+    
+    # 创建字符串变量
+    let str1 = "Hello, World!"
+    let str2 = "内存管理演示"
+    let str3 = "This is a longer string to demonstrate memory allocation for strings."
+    
+    # 创建列表
+    let list1 = [1, 2, 3, 4, 5]
+    let list2 = ["apple", "banana", "orange"]
+    let list3 = [num1, num2, str1]
+    
+    # 创建嵌套结构
+    let nested = [
+        [1, 2, [3, 4]],
+        ["a", "b", ["c", "d"]],
+        [num1, str1, list1]
+    ]
+    
+    print("变量创建完成，观察内存分配情况...")
+    
+    return num1, str1, list1, nested
+
+# 调用测试函数
+let result = memory_allocation_test()
+print("内存分配测试完成")

@@ -1,0 +1,119 @@
+# 内存优化示例
+# 这个示例展示一些内存优化的技巧和最佳实践
+
+def inefficient_memory_usage():
+    print("演示低效的内存使用方式...")
+    
+    # 低效方式1：重复创建大字符串
+    let result = ""
+    for i in range(100):
+        result = result + "Item " + str(i) + ", "
+    
+    # 低效方式2：创建不必要的临时对象
+    let temp_arrays = []
+    for i in range(50):
+        let temp = [i, i*2, i*3]
+        temp_arrays.push(temp)
+        # 这里立即丢弃引用，但对象还在内存中
+    
+    return result
+
+def efficient_memory_usage():
+    print("演示高效的内存使用方式...")
+    
+    # 高效方式1：使用数组拼接字符串
+    let parts = []
+    for i in range(100):
+        parts.push("Item " + str(i))
+    let result = join(parts, ", ")
+    
+    # 高效方式2：重用对象
+    let reusable_array = [0, 0, 0]
+    let results = []
+    
+    for i in range(50):
+        reusable_array[0] = i
+        reusable_array[1] = i * 2
+        reusable_array[2] = i * 3
+        # 复制值而不是创建新对象
+        results.push([reusable_array[0], reusable_array[1], reusable_array[2]])
+    
+    return result, results
+
+def memory_pool_example():
+    print("演示对象池模式...")
+    
+    # 创建对象池
+    let object_pool = []
+    
+    # 预分配对象
+    for i in range(10):
+        object_pool.push({
+            "id": -1,
+            "data": "",
+            "active": false
+        })
+    
+    # 使用对象池
+    let active_objects = []
+    
+    for i in range(20):
+        let obj = null
+        
+        # 尝试从池中获取对象
+        for pool_obj in object_pool:
+            if not pool_obj["active"]:
+                obj = pool_obj
+                break
+        
+        # 如果池中没有可用对象，创建新的
+        if obj == null:
+            obj = {
+                "id": -1,
+                "data": "",
+                "active": false
+            }
+            object_pool.push(obj)
+        
+        # 初始化对象
+        obj["id"] = i
+        obj["data"] = "Object " + str(i)
+        obj["active"] = true
+        
+        active_objects.push(obj)
+    
+    print("对象池中总对象数：" + str(len(object_pool)))
+    print("活跃对象数：" + str(len(active_objects)))
+    
+    # 释放对象回池中
+    for obj in active_objects:
+        obj["active"] = false
+        obj["id"] = -1
+        obj["data"] = ""
+    
+    return object_pool
+
+def memory_optimization_demo():
+    print("=== 内存优化演示开始 ===")
+    
+    print("\n1. 低效内存使用演示:")
+    let inefficient_result = inefficient_memory_usage()
+    
+    print("\n2. 高效内存使用演示:")
+    let efficient_result = efficient_memory_usage()
+    
+    print("\n3. 对象池演示:")
+    let pool_result = memory_pool_example()
+    
+    print("\n=== 内存优化演示完成 ===")
+    print("对比观察内存使用情况的差异")
+    
+    return {
+        "inefficient": inefficient_result,
+        "efficient": efficient_result,
+        "pool": pool_result
+    }
+
+# 执行内存优化演示
+let optimization_results = memory_optimization_demo()
+print("内存优化演示结束")

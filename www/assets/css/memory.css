@@ -1,0 +1,97 @@
+/* 内存管理模块专用样式 */
+
+.editor {
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+.editor-code {
+    flex: 1;
+    border-right: 1px solid #444;
+}
+
+.editor-result {
+    flex: 1;
+    background: #1e1e1e;
+    color: #ffffff;
+    padding: 15px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.editor-result pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* 内存状态样式 */
+.memory-status {
+    background: #2d2d2d;
+    border-left: 4px solid #00bcd4;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.memory-block {
+    background: #3d3d3d;
+    border-left: 3px solid #4caf50;
+    padding: 8px;
+    margin: 5px 0;
+    font-size: 13px;
+}
+
+.memory-warning {
+    color: #ff9800;
+}
+
+.memory-error {
+    color: #f44336;
+}
+
+.memory-info {
+    color: #2196f3;
+}
+
+.memory-success {
+    color: #4caf50;
+}
+
+/* 代码编辑器样式调整 */
+.CodeMirror {
+    height: 100%;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* 导航栏样式 */
+.layui-nav {
+    background-color: rgb(41, 46, 80) !important;
+}
+
+.layui-nav .layui-nav-item a {
+    color: #ffffff !important;
+}
+
+.layui-nav .layui-nav-item a:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .editor {
+        flex-direction: column;
+    }
+    
+    .editor-code {
+        border-right: none;
+        border-bottom: 1px solid #444;
+        height: 50%;
+    }
+    
+    .editor-result {
+        height: 50%;
+    }
+}
