@@ -311,13 +311,20 @@ layui.util.on('lay-on', {
     },
 });
 
-// 初始化提示
+// 初始化文件系统
 (async () => {
     try {
         await this_html.loadFilesystemModule();
         console.log('文件系统模块加载成功');
+        
+        // 自动初始化文件系统，创建默认文件和目录
+        document.getElementById('editor-result').innerHTML += 
+            `<hr><span style="color:#5FB878">🚀 正在初始化文件系统...</span><br>`;
+        await this_html.callModuleFunction('_filesystem_init');
+        
+        console.log('文件系统自动初始化完成');
     } catch (error) {
-        console.error('文件系统模块加载失败:', error);
+        console.error('文件系统模块加载或初始化失败:', error);
         document.getElementById('editor-result').innerHTML = 
             `<span style="color:red">⚠️ 文件系统模块加载失败，请检查WASM文件</span><br>`;
     }

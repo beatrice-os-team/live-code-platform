@@ -89,6 +89,18 @@ static void ensure_demo_directory_only() {
     mkdir("/demo", 0755);
 }
 
+// 文件系统初始化函数 - 页面加载时自动调用
+EMSCRIPTEN_KEEPALIVE void filesystem_init() {
+    printf("=== 文件系统自动初始化 ===\n");
+    
+    // 强制进行首次初始化，创建所有默认文件和目录
+    ensure_demo_directory();
+    
+    printf("✅ 文件系统初始化完成！\n");
+    printf("📁 已创建默认演示文件和目录\n");
+    printf("💡 您现在可以开始使用文件系统功能了\n");
+}
+
 // 演示文件读取操作
 EMSCRIPTEN_KEEPALIVE void demo_fs_read(const char* filepath) {
     printf("=== 文件系统读取演示 ===\n");

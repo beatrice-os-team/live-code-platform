@@ -1,0 +1,69 @@
+// 验证文件系统自动初始化
+// 这个脚本用于验证默认文件是否已经存在
+
+import fs
+
+print("=== 验证文件系统自动初始化 ===")
+
+// 1. 检查基础目录
+print("\n1. 检查基础目录结构:")
+try {
+    let demo_files = fs.readdir("/demo")
+    print("✅ /demo 目录存在")
+    print("📁 目录内容已列出")
+} catch {
+    print("❌ /demo 目录不存在")
+}
+
+// 2. 检查默认文件
+print("\n2. 检查默认文件:")
+
+// 检查 hello.txt
+try {
+    let hello_content = fs.read("/demo/hello.txt")
+    print("✅ hello.txt 存在，内容: " + hello_content)
+} catch {
+    print("❌ hello.txt 不存在")
+}
+
+// 检查 data.txt
+try {
+    let data_content = fs.read("/demo/data.txt")
+    print("✅ data.txt 存在，内容: " + data_content)
+} catch {
+    print("❌ data.txt 不存在")
+}
+
+// 检查 numbers.txt
+try {
+    let numbers_content = fs.read("/demo/numbers.txt")
+    print("✅ numbers.txt 存在，内容: " + numbers_content)
+} catch {
+    print("❌ numbers.txt 不存在")
+}
+
+// 3. 检查子目录和嵌套文件
+print("\n3. 检查子目录:")
+try {
+    let subdir_files = fs.readdir("/demo/subdir")
+    print("✅ /demo/subdir 目录存在")
+} catch {
+    print("❌ /demo/subdir 目录不存在")
+}
+
+try {
+    let nested_content = fs.read("/demo/subdir/nested.txt")
+    print("✅ nested.txt 存在，内容: " + nested_content)
+} catch {
+    print("❌ nested.txt 不存在")
+}
+
+// 4. 总结
+print("\n=== 初始化验证结果 ===")
+print("如果上面所有项目都显示 ✅，说明自动初始化成功!")
+print("如果有 ❌ 项目，说明自动初始化存在问题。")
+
+print("\n💡 提示:")
+print("- 这个验证应该在页面刚加载后运行")
+print("- 无需手动点击任何按钮就能看到文件存在")
+print("- 这证明了文件系统已经正确自动初始化")
