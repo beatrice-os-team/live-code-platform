@@ -1,0 +1,39 @@
+// 目录操作演示
+// 展示文件和目录的管理操作
+
+import fs
+
+print("=== 目录操作演示 ===")
+
+// 1. 创建测试文件
+print("\n1. 创建测试文件:")
+fs.write("/demo/file1.txt", "文件1的内容")
+fs.write("/demo/file2.txt", "文件2的内容")
+fs.write("/demo/file3.txt", "文件3的内容")
+print("创建了3个测试文件")
+
+// 2. 文件重命名操作
+print("\n2. 文件重命名:")
+fs.rename("/demo/file1.txt", "/demo/renamed_file1.txt")
+print("file1.txt 已重命名为 renamed_file1.txt")
+
+// 3. 验证重命名
+print("\n3. 验证重命名:")
+let renamed_content = fs.read("/demo/renamed_file1.txt")
+print("重命名后的文件内容: " + renamed_content)
+
+// 4. 文件操作总结
+print("\n4. 文件操作演示:")
+print("  - 创建文件: fs.write(path, content)")
+print("  - 读取文件: fs.read(path)")
+print("  - 追加文件: fs.append(path, content)")
+print("  - 重命名文件: fs.rename(old_path, new_path)")
+print("  - 删除文件: fs.remove(path)")
+
+// 5. 清理演示文件
+print("\n5. 清理演示文件:")
+fs.remove("/demo/file2.txt")
+fs.remove("/demo/file3.txt")
+print("演示文件清理完成")
+
+print("\n=== 目录操作演示完成 ===")
