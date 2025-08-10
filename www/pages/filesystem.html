@@ -46,6 +46,7 @@
                     <a href="javascript:this_html.loadscript('filesystem-demo1.els');">基础文件操作</a>
                     <a href="javascript:this_html.loadscript('filesystem-demo2.els');">目录操作</a>
                     <a href="javascript:this_html.loadscript('filesystem-demo3.els');">文件管理</a>
+                    <a href="javascript:this_html.loadscript('filesystem-demo4.els');">高级管理</a>
                 </dd>
             </dl>
         </li>
@@ -68,6 +69,9 @@
             <button class="layui-btn layui-btn-sm layui-btn-warm" onclick="this_html.demo_stat_file()">
                 <i class="layui-icon layui-icon-chart"></i> 文件信息
             </button>
+            <button class="layui-btn layui-btn-sm layui-btn-warm" onclick="this_html.demo_rename_file()">
+                <i class="layui-icon layui-icon-edit"></i> 重命名文件
+            </button>
             <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="this_html.demo_delete_file()">
                 <i class="layui-icon layui-icon-delete"></i> 删除文件
             </button>
@@ -81,8 +85,14 @@
             <button class="layui-btn layui-btn-sm layui-btn-normal" onclick="this_html.demo_make_dir()">
                 <i class="layui-icon layui-icon-add-1"></i> 创建目录
             </button>
-            <button class="layui-btn layui-btn-sm layui-btn-warm" onclick="this_html.demo_rename_file()">
-                <i class="layui-icon layui-icon-edit"></i> 重命名
+            <button class="layui-btn layui-btn-sm layui-btn-warm" onclick="this_html.demo_stat_dir()">
+                <i class="layui-icon layui-icon-chart"></i> 目录信息
+            </button>
+            <button class="layui-btn layui-btn-sm layui-btn-warm" onclick="this_html.demo_rename_dir()">
+                <i class="layui-icon layui-icon-edit"></i> 重命名目录
+            </button>
+            <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="this_html.demo_delete_dir()">
+                <i class="layui-icon layui-icon-delete"></i> 删除目录
             </button>
         </div>
     </div>

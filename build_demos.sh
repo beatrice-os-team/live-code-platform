@@ -104,7 +104,7 @@ INCLUDE_DIRS="-I ../include"
 LOSU_SRC_FILES=$(find ../losu -name "*.c" | grep -v "\.core\.dtc\.c" | tr '\n' ' ')
 emcc main.c ${LOSU_SRC_FILES} ${INCLUDE_DIRS} \
      -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s EXPORT_NAME="LosuFilesystem" \
-     -s EXPORTED_FUNCTIONS="['_filesystem_demo', '_demo_fs_read', '_demo_fs_write', '_demo_fs_mkdir', '_demo_fs_readdir', '_demo_fs_unlink', '_demo_fs_rename', '_demo_fs_stat', '_run', '_malloc', '_free']" \
+     -s EXPORTED_FUNCTIONS="['_filesystem_demo', '_demo_fs_read', '_demo_fs_write', '_demo_fs_mkdir', '_demo_fs_readdir', '_demo_fs_unlink', '_demo_fs_rename', '_demo_fs_stat', '_demo_fs_rmdir', '_run', '_malloc', '_free']" \
      -s EXPORTED_RUNTIME_METHODS="['lengthBytesUTF8', 'stringToUTF8']" \
      -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 \
      -o ../../www/assets/wasm/filesystem.m.js

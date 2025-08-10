@@ -38,15 +38,17 @@ void print_fs_operation(fs_operation_type_t op, const char* path, const char* re
 // 文件系统是否已初始化的标志
 static int fs_initialized = 0;
 
-// 确保目录存在的辅助函数（只在首次调用时初始化文件）
+// 确保目录存在的辅助函数（只在首次调用时初始化文件和目录）
 static void ensure_demo_directory() {
-    // 总是确保 /demo 目录存在
+    // 总是确保基础 /demo 目录存在
     mkdir("/demo", 0755);
-    mkdir("/demo/subdir", 0755);
     
-    // 只在首次调用时创建默认文件
+    // 只在首次调用时创建默认子目录和文件
     if (!fs_initialized) {
         FILE* fp;
+        
+        // 创建默认子目录
+        mkdir("/demo/subdir", 0755);
         
         // hello.txt
         fp = fopen("/demo/hello.txt", "w");
@@ -77,15 +79,14 @@ static void ensure_demo_directory() {
         }
         
         fs_initialized = 1;
-        printf("🔧 首次初始化文件系统，创建了默认演示文件\n");
+        printf("🔧 首次初始化文件系统，创建了默认演示文件和目录\n");
     }
 }
 
-// 确保目录存在但不重新创建文件的函数
+// 确保基础目录存在但不重新创建子目录和文件的函数
 static void ensure_demo_directory_only() {
-    // 只确保目录存在，不创建文件
+    // 只确保基础 /demo 目录存在，不强制重建子目录
     mkdir("/demo", 0755);
-    mkdir("/demo/subdir", 0755);
 }
 
 // 演示文件读取操作
@@ -432,6 +433,74 @@ EMSCRIPTEN_KEEPALIVE void demo_fs_stat(const char* filepath) {
     printf("   是Socket: %s\n", S_ISSOCK(st.st_mode) ? "是" : "否");
     
     print_fs_operation(FS_OP_STAT, filepath, "成功");
+}
+
+// 演示目录删除操作
+EMSCRIPTEN_KEEPALIVE void demo_fs_rmdir(const char* dirpath) {
+    printf("=== 文件系统目录删除演示 ===\n");
+    printf("正在删除目录: %s\n", dirpath);
+    
+    // 确保演示目录存在（但不重新创建被删除的文件）
+    ensure_demo_directory_only();
+    
+    // 检查目录是否存在
+    struct stat st;
+    if (stat(dirpath, &st) != 0) {
+        printf("❌ 目录不存在: %s\n", strerror(errno));
+        print_fs_operation(FS_OP_DELETE, dirpath, "失败");
+        return;
+    }
+    
+    if (!S_ISDIR(st.st_mode)) {
+        printf("❌ 指定路径不是目录\n");
+        print_fs_operation(FS_OP_DELETE, dirpath, "失败");
+        return;
+    }
+    
+    printf("📂 删除前目录信息:\n");
+    printf("   目录路径: %s\n", dirpath);
+    printf("   目录权限: %o\n", st.st_mode & 0777);
+    
+    // 尝试删除目录
+    if (rmdir(dirpath) != 0) {
+        if (errno == ENOTEMPTY) {
+            printf("❌ 目录删除失败: 目录不为空\n");
+            printf("💡 提示: 请先删除目录中的所有文件和子目录\n");
+            
+            // 显示目录内容
+            printf("📋 目录内容:\n");
+            DIR* dir = opendir(dirpath);
+            if (dir) {
+                struct dirent* entry;
+                int count = 0;
+                while ((entry = readdir(dir)) != NULL) {
+                    if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
+                        count++;
+                        printf("   %d. %s\n", count, entry->d_name);
+                    }
+                }
+                closedir(dir);
+                if (count == 0) {
+                    printf("   (目录为空，但删除仍然失败)\n");
+                }
+            }
+        } else {
+            printf("❌ 目录删除失败: %s\n", strerror(errno));
+        }
+        print_fs_operation(FS_OP_DELETE, dirpath, "失败");
+        return;
+    }
+    
+    printf("✅ 目录删除成功!\n");
+    
+    // 验证删除
+    if (stat(dirpath, &st) != 0) {
+        printf("✅ 验证: 目录已成功删除\n");
+    } else {
+        printf("⚠️ 验证: 目录仍然存在 (可能删除失败)\n");
+    }
+    
+    print_fs_operation(FS_OP_DELETE, dirpath, "成功");
 }
 
 // 综合文件系统演示

@@ -219,8 +219,41 @@ print("=== 开始文件系统演示 ===")`;
             const newpath = prompt('请输入新文件路径:', '/demo/hello_renamed.txt');
             if (newpath) {
                 document.getElementById('editor-result').innerHTML += 
-                    `<hr><span style="color:#5FB878">🔄 重命名: ${oldpath} → ${newpath}</span><br>`;
+                    `<hr><span style="color:#5FB878">🔄 重命名文件: ${oldpath} → ${newpath}</span><br>`;
                 await this.callModuleFunction('_demo_fs_rename', oldpath, newpath);
+            }
+        }
+    },
+
+    async demo_stat_dir() {
+        const dirpath = prompt('请输入目录路径:', '/demo');
+        if (dirpath) {
+            document.getElementById('editor-result').innerHTML += 
+                `<hr><span style="color:#5FB878">📊 获取目录信息: ${dirpath}</span><br>`;
+            await this.callModuleFunction('_demo_fs_stat', dirpath);
+        }
+    },
+
+    async demo_rename_dir() {
+        const oldpath = prompt('请输入原目录路径:', '/demo/subdir');
+        if (oldpath) {
+            const newpath = prompt('请输入新目录路径:', '/demo/renamed_subdir');
+            if (newpath) {
+                document.getElementById('editor-result').innerHTML += 
+                    `<hr><span style="color:#5FB878">🔄 重命名目录: ${oldpath} → ${newpath}</span><br>`;
+                await this.callModuleFunction('_demo_fs_rename', oldpath, newpath);
+            }
+        }
+    },
+
+    async demo_delete_dir() {
+        const dirpath = prompt('请输入要删除的目录路径:', '/demo/subdir');
+        if (dirpath) {
+            const confirmed = confirm(`确定要删除目录 ${dirpath} 吗？\n注意：这将删除目录及其所有内容！`);
+            if (confirmed) {
+                document.getElementById('editor-result').innerHTML += 
+                    `<hr><span style="color:#FF5722">🗑️ 删除目录: ${dirpath}</span><br>`;
+                await this.callModuleFunction('_demo_fs_rmdir', dirpath);
             }
         }
     },
