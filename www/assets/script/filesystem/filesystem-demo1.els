@@ -1,0 +1,35 @@
+// 基础文件操作演示
+// 展示 Losu 语言中的文件系统基本操作
+
+import fs
+
+print("=== 基础文件操作演示 ===")
+
+// 1. 读取现有文件
+print("\n1. 读取文件:")
+let content = fs.read("/demo/hello.txt")
+print("文件内容: " + content)
+
+// 2. 写入新文件
+print("\n2. 写入文件:")
+let message = "Hello from Losu FileSystem!"
+fs.write("/demo/my_first_file.txt", message)
+print("文件写入成功: /demo/my_first_file.txt")
+
+// 3. 验证写入的文件
+print("\n3. 验证写入:")
+let written_content = fs.read("/demo/my_first_file.txt")
+print("验证内容: " + written_content)
+
+// 4. 追加内容到文件
+print("\n4. 追加内容:")
+let appendText = "\n这是追加的新行内容"
+fs.append("/demo/my_first_file.txt", appendText)
+print("内容追加完成")
+
+// 5. 再次读取验证追加
+print("\n5. 验证追加:")
+let final_content = fs.read("/demo/my_first_file.txt")
+print("最终内容:\n" + final_content)
+
+print("\n=== 基础文件操作演示完成 ===")

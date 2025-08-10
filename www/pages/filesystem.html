@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang='zh-cn'>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件系统演示 - Compiler & OS DashBoard on WebAssembly</title>
+    <link rel="stylesheet" href="/assets/lib/layui@2.11.4/css/layui.css">
+    <link id="layui_theme" rel="stylesheet" href="/assets/lib/layui@2.11.4/css/layui-dark.css">
+    <link rel="stylesheet" href="/assets/lib/codemirror@5.65.18/lib/codemirror.css">
+    <link rel="stylesheet" href="/assets/lib/codemirror@5.65.18/theme/material-palenight.css">
+    <link rel="stylesheet" href="/assets/lib/codemirror@5.65.18/theme/solarized.css">
+
+    <link id="markdown_theme" rel="stylesheet" href="/assets/css/markdown.css">
+    <link id="highlight_theme" rel="stylesheet" href="/assets/lib/highlight@10.7.3/styles/atom-one-dark.css">
+
+    <link rel="stylesheet" href="/assets/css/filesystem.css">
+</head>
+
+<body>
+
+    <div class="layui-nav layui-nav-child-l " style="background-color: rgb(41, 46, 80);">
+        <li class="layui-nav-item layui-this">
+            <a href="javascript:;" class="layui-icon layui-icon-fonts-code">文件系统演示</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;" class="layui-icon layui-icon-read" lay-on="iframe">参考手册</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:this_html.editor_run();" class="layui-icon layui-icon-play">运行代码</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:this_html.filesystem_demo();" class="layui-icon layui-icon-component">文件系统演示</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:this_html.editor_clear();" class="layui-icon layui-icon-clear">清空输出</a>
+        </li>
+
+        <li class="layui-nav-item">
+            <a href="javascript:location.reload(true);" class="layui-icon layui-icon-refresh-3">刷新页面</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;" class="layui-icon layui-icon-fonts-code">示例代码</a>
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:this_html.loadscript('verify-init.els');">验证初始化</a>
+                    <a href="javascript:this_html.loadscript('filesystem-demo1.els');">基础文件操作</a>
+                    <a href="javascript:this_html.loadscript('filesystem-demo2.els');">目录操作</a>
+                    <a href="javascript:this_html.loadscript('filesystem-demo3.els');">文件管理</a>
+                    <a href="javascript:this_html.loadscript('filesystem-demo4.els');">高级管理</a>
+                    <a href="javascript:this_html.loadscript('test-rename.els');">测试重命名</a>
+                </dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item ">
+            <a href="javascript:this_html.toggle_theme();" id='layui_theme_btn'
+                class="layui-icon layui-icon-theme">切换主题</a>
+        </li>
+    </div>
+
+    <!-- 文件系统操作控制面板 -->
+    <div class="filesystem-controls">
+        <div class="operation-section">
+            <div class="operation-title">📁 文件操作</div>
+            <button class="layui-btn layui-btn-sm" onclick="this_html.demo_read_file()">
+                <i class="layui-icon layui-icon-read"></i> 读取文件
+            </button>
+            <button class="layui-btn layui-btn-sm layui-btn-normal" onclick="this_html.demo_write_file()">
+                <i class="layui-icon layui-icon-edit"></i> 写入文件
+            </button>
+            <button class="layui-btn layui-btn-sm layui-btn-warm" onclick="this_html.demo_stat_file()">
+                <i class="layui-icon layui-icon-chart"></i> 文件信息
+            </button>
+            <button class="layui-btn layui-btn-sm layui-btn-warm" onclick="this_html.demo_rename_file()">
+                <i class="layui-icon layui-icon-edit"></i> 重命名文件
+            </button>
+            <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="this_html.demo_delete_file()">
+                <i class="layui-icon layui-icon-delete"></i> 删除文件
+            </button>
+        </div>
+        
+        <div class="operation-section">
+            <div class="operation-title">📂 目录操作</div>
+            <button class="layui-btn layui-btn-sm" onclick="this_html.demo_list_dir()">
+                <i class="layui-icon layui-icon-template-1"></i> 列出目录
+            </button>
+            <button class="layui-btn layui-btn-sm layui-btn-normal" onclick="this_html.demo_make_dir()">
+                <i class="layui-icon layui-icon-add-1"></i> 创建目录
+            </button>
+            <button class="layui-btn layui-btn-sm layui-btn-warm" onclick="this_html.demo_stat_dir()">
+                <i class="layui-icon layui-icon-chart"></i> 目录信息
+            </button>
+            <button class="layui-btn layui-btn-sm layui-btn-warm" onclick="this_html.demo_rename_dir()">
+                <i class="layui-icon layui-icon-edit"></i> 重命名目录
+            </button>
+            <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="this_html.demo_delete_dir()">
+                <i class="layui-icon layui-icon-delete"></i> 删除目录
+            </button>
+        </div>
+    </div>
+
+    <div class="editor">
+        <div class="editor-code">
+            <textarea id="editor-code">// Losu 文件系统演示
+// 使用内置的 fs 模块进行文件操作
+
+import fs
+
+// 读取文件示例
+let content = fs.read("/demo/hello.txt")
+print("文件内容: " + content)
+
+// 写入文件示例
+fs.write("/demo/my_file.txt", "Hello from Losu!")
+print("文件写入完成")
+
+// 追加内容示例
+fs.append("/demo/my_file.txt", "\n这是追加的内容")
+print("内容追加完成")
+
+// 重命名文件示例
+fs.rename("/demo/my_file.txt", "/demo/renamed_file.txt")
+print("文件重命名完成")
+
+// 删除文件示例
+// fs.remove("/demo/renamed_file.txt")
+// print("文件删除完成")</textarea>
+        </div>
+        <div class="editor-result">
+            <pre id="editor-result">🔧 文件系统演示模块已就绪
+📖 点击"文件系统演示"按钮开始体验
+💡 或者直接运行左侧的示例代码</pre>
+        </div>
+    </div>
+
+</body>
+<script src="/assets/lib/layui@2.11.4/layui.js"></script>
+<script src="/assets/lib/raf@1.0.0/raf.js"></script>
+<script src="/assets/lib/codemirror@5.65.18/lib/codemirror.js"></script>
+<script src="/assets/lib/codemirror@5.65.18/mode/ec2/ec2.js"></script>
+<script src="/assets/lib/codemirror@5.65.18/addon/lint/lint.js"></script>
+<script src="/assets/lib/codemirror@5.65.18/addon/hint/show-hint.js"></script>
+
+<script src="/assets/wasm/filesystem.m.js"></script>
+<script src="/assets/js/filesystem.js"></script>
+
+</html>

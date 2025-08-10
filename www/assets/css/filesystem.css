@@ -1,0 +1,209 @@
+/* 文件系统演示模块样式 */
+
+.filesystem-controls {
+    margin: 10px 0;
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(41, 46, 80, 0.4), rgba(95, 184, 120, 0.1));
+    border-radius: 8px;
+    border: 1px solid rgba(95, 184, 120, 0.3);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.operation-section {
+    margin: 15px 0;
+    padding: 15px;
+    border: 1px solid rgba(95, 184, 120, 0.2);
+    border-radius: 6px;
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.3), rgba(41, 46, 80, 0.2));
+    transition: all 0.3s ease;
+}
+
+.operation-section:hover {
+    border-color: rgba(95, 184, 120, 0.4);
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.4), rgba(41, 46, 80, 0.3));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(95, 184, 120, 0.1);
+}
+
+.operation-title {
+    color: #5FB878;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 12px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.operation-title::before {
+    content: '';
+    width: 3px;
+    height: 16px;
+    background: linear-gradient(to bottom, #5FB878, #4CAF50);
+    border-radius: 2px;
+}
+
+.filesystem-controls .layui-btn {
+    margin: 4px 6px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-size: 12px;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.filesystem-controls .layui-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.filesystem-controls .layui-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.filesystem-controls .layui-btn:hover::before {
+    left: 100%;
+}
+
+.file-tree {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.6), rgba(41, 46, 80, 0.3));
+    padding: 15px;
+    border-radius: 6px;
+    margin: 15px 0;
+    border: 1px solid rgba(95, 184, 120, 0.2);
+    color: #e0e0e0;
+    line-height: 1.6;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.file-tree .file-item {
+    display: flex;
+    align-items: center;
+    padding: 2px 0;
+    transition: background-color 0.2s ease;
+}
+
+.file-tree .file-item:hover {
+    background-color: rgba(95, 184, 120, 0.1);
+    border-radius: 3px;
+}
+
+.file-tree .file-icon {
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+/* 文件系统结果输出样式 */
+#editor-result {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 30, 0.9));
+    border: 1px solid rgba(95, 184, 120, 0.3);
+    border-radius: 6px;
+    padding: 15px;
+    color: #e0e0e0;
+    line-height: 1.6;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* 滚动条样式 */
+#editor-result::-webkit-scrollbar {
+    width: 8px;
+}
+
+#editor-result::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+#editor-result::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #5FB878, #4CAF50);
+    border-radius: 4px;
+}
+
+#editor-result::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #4CAF50, #45a049);
+}
+
+/* 特殊的输出文本样式 */
+#editor-result .fs-success {
+    color: #5FB878;
+    font-weight: bold;
+}
+
+#editor-result .fs-error {
+    color: #FF5722;
+    font-weight: bold;
+}
+
+#editor-result .fs-info {
+    color: #2196F3;
+}
+
+#editor-result .fs-warning {
+    color: #FF9800;
+}
+
+#editor-result .fs-path {
+    color: #FFEB3B;
+    font-style: italic;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.filesystem-controls {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.operation-section {
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .filesystem-controls {
+        padding: 10px;
+        margin: 5px 0;
+    }
+    
+    .operation-section {
+        padding: 10px;
+        margin: 10px 0;
+    }
+    
+    .filesystem-controls .layui-btn {
+        margin: 3px 2px;
+        padding: 0 10px;
+        font-size: 11px;
+        height: 28px;
+        line-height: 28px;
+    }
+    
+    .operation-title {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+}

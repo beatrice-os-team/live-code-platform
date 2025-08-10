@@ -1,0 +1,70 @@
+// 文件管理综合演示
+// 展示完整的文件系统操作流程
+
+import fs
+
+print("=== 文件管理综合演示 ===")
+
+// 1. 创建项目结构
+print("\n1. 创建项目文件:")
+
+// 创建配置文件
+let config = "{\n  \"name\": \"MyProject\",\n  \"version\": \"1.0.0\",\n  \"author\": \"Losu Developer\"\n}"
+fs.write("/demo/config.json", config)
+
+// 创建文档文件
+let readme = "# 我的项目\n\n这是一个使用 Losu 语言的示例项目。\n\n## 功能\n- 文件操作\n- 数据处理\n- 配置管理"
+fs.write("/demo/README.md", readme)
+
+// 创建数据文件
+let data = "用户1,张三,25\n用户2,李四,30\n用户3,王五,28"
+fs.write("/demo/users.csv", data)
+
+print("项目文件创建完成")
+
+// 2. 读取和处理配置
+print("\n2. 读取配置文件:")
+let config_content = fs.read("/demo/config.json")
+print("配置内容:\n" + config_content)
+
+// 3. 读取文档
+print("\n3. 读取文档文件:")
+let readme_content = fs.read("/demo/README.md")
+print("文档内容:\n" + readme_content)
+
+// 4. 处理数据文件
+print("\n4. 处理数据文件:")
+let user_data = fs.read("/demo/users.csv")
+print("用户数据:\n" + user_data)
+
+// 5. 创建处理后的数据
+print("\n5. 创建处理结果:")
+let processed_data = "处理时间: 2024-01-01\n总用户数: 3\n平均年龄: 27.7"
+fs.write("/demo/processed_result.txt", processed_data)
+
+// 6. 创建备份
+print("\n6. 创建备份文件:")
+let backup_config = fs.read("/demo/config.json")
+fs.write("/demo/config.backup.json", backup_config)
+print("配置文件备份完成")
+
+// 7. 更新配置
+print("\n7. 更新配置文件:")
+let updated_config = "{\n  \"name\": \"MyProject\",\n  \"version\": \"1.1.0\",\n  \"author\": \"Losu Developer\",\n  \"last_update\": \"2024-01-01\"\n}"
+fs.write("/demo/config.json", updated_config)
+
+// 8. 验证更新
+print("\n8. 验证配置更新:")
+let new_config = fs.read("/demo/config.json")
+print("更新后的配置:\n" + new_config)
+
+// 9. 文件管理总结
+print("\n9. 文件管理总结:")
+print("✅ 创建了项目配置文件")
+print("✅ 生成了项目文档")
+print("✅ 处理了用户数据")
+print("✅ 创建了处理结果")
+print("✅ 备份了重要文件")
+print("✅ 更新了配置版本")
+
+print("\n=== 文件管理综合演示完成 ===")
