@@ -8,6 +8,10 @@
 
 初赛所需的全部内容请点击[连接](https://github.com/beatrice-os-team#%E5%88%9D%E8%B5%9B%E9%98%B6%E6%AE%B5)，包括项目、源代码分析、设计方案、进展汇报幻灯片、作品演示视频。
 
+## 决赛提交
+
+- [设计方案](https://beatrice-os-team.github.io/docs/final-design-plan/)
+
 ## 使用方式
 
 1. 确保当前操作系统安装了 node 软件包。
