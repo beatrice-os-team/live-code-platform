@@ -109,6 +109,7 @@ typedef struct {
     int current_time;
     int thread_counter;
     int context_switches;
+    int current_time_slice;  // 添加当前线程已运行的时间片计数
     float avg_turnaround_time;
     float avg_waiting_time;
     float avg_response_time;
@@ -301,11 +302,21 @@ void execute_time_slice() {
                 g_scheduler.running_thread->start_time = g_scheduler.current_time;
                 g_scheduler.running_thread->response_time = 
                     g_scheduler.current_time - g_scheduler.running_thread->arrival_time;
+                
+                // 防御性检查：响应时间不应该为负数
+                if (g_scheduler.running_thread->response_time < 0) {
+                    thread_print_info("警告：线程 %s 响应时间为负数 (%d)，重置为0\n", 
+                        g_scheduler.running_thread->name, g_scheduler.running_thread->response_time);
+                    thread_print_info("  到达时间: %d, 开始时间: %d\n",
+                        g_scheduler.running_thread->arrival_time, g_scheduler.running_thread->start_time);
+                    g_scheduler.running_thread->response_time = 0;
+                }
             }
             
             thread_print_state_change(g_scheduler.running_thread, old_state, THREAD_STATE_RUNNING);
             thread_print_schedule_info(g_scheduler.running_thread);
             g_scheduler.context_switches++;
+            g_scheduler.current_time_slice = 0;  // 重置时间片计数
         }
     }
     
@@ -319,33 +330,49 @@ void execute_time_slice() {
         if (g_scheduler.running_thread->remaining_time <= 0) {
             thread_state_t old_state = g_scheduler.running_thread->state;
             g_scheduler.running_thread->state = THREAD_STATE_TERMINATED;
+            // 修复：完成时间应该是当前时间+1，因为这个时间片执行完了
             g_scheduler.running_thread->completion_time = g_scheduler.current_time + 1;
+            
+            // 重新计算时间指标
             g_scheduler.running_thread->turnaround_time = 
                 g_scheduler.running_thread->completion_time - g_scheduler.running_thread->arrival_time;
+            
+            // 等待时间 = 周转时间 - 实际执行时间  
             g_scheduler.running_thread->waiting_time = 
                 g_scheduler.running_thread->turnaround_time - g_scheduler.running_thread->burst_time;
             
+            // 确保等待时间不为负数（防御性编程）
+            if (g_scheduler.running_thread->waiting_time < 0) {
+                thread_print_info("警告：线程 %s 等待时间为负数，重置为0\n", g_scheduler.running_thread->name);
+                g_scheduler.running_thread->waiting_time = 0;
+            }
+            
             thread_print_state_change(g_scheduler.running_thread, old_state, THREAD_STATE_TERMINATED);
-            thread_print_info("线程 %s 完成执行 (周转时间:%d, 等待时间:%d)\n",
-                g_scheduler.running_thread->name, 
+            thread_print_info("线程 %s 完成执行详情:\n", g_scheduler.running_thread->name);
+            thread_print_info("  到达时间: %d, 开始时间: %d, 完成时间: %d\n",
+                g_scheduler.running_thread->arrival_time,
+                g_scheduler.running_thread->start_time,
+                g_scheduler.running_thread->completion_time);
+            thread_print_info("  执行时间: %d, 周转时间: %d, 等待时间: %d, 响应时间: %d\n",
+                g_scheduler.running_thread->burst_time,
                 g_scheduler.running_thread->turnaround_time,
-                g_scheduler.running_thread->waiting_time);
+                g_scheduler.running_thread->waiting_time,
+                g_scheduler.running_thread->response_time);
             
             enqueue_thread(&g_scheduler.terminated_queue, g_scheduler.running_thread);
             g_scheduler.running_thread = NULL;
         } else if (g_scheduler.algorithm == SCHEDULE_RR) {
             // 时间片轮转：时间片用完，线程回到就绪队列
-            static int time_slice_counter = 0;
-            time_slice_counter++;
+            g_scheduler.current_time_slice++;
             
-            if (time_slice_counter >= g_scheduler.time_quantum) {
+            if (g_scheduler.current_time_slice >= g_scheduler.time_quantum) {
                 thread_state_t old_state = g_scheduler.running_thread->state;
                 g_scheduler.running_thread->state = THREAD_STATE_READY;
                 thread_print_state_change(g_scheduler.running_thread, old_state, THREAD_STATE_READY);
                 
                 enqueue_thread(&g_scheduler.ready_queue, g_scheduler.running_thread);
                 g_scheduler.running_thread = NULL;
-                time_slice_counter = 0;
+                g_scheduler.current_time_slice = 0;  // 重置时间片计数
             }
         }
     }
@@ -393,6 +420,7 @@ void init_scheduler(schedule_algorithm_t algorithm, int time_quantum) {
     g_scheduler.current_time = 0;
     g_scheduler.thread_counter = 0;
     g_scheduler.context_switches = 0;
+    g_scheduler.current_time_slice = 0;
     
     const char* algorithm_names[] = {"FCFS", "SJF", "RR", "Priority", "MLFQ"};
     thread_print_info("初始化调度器，算法: %s", algorithm_names[algorithm]);
@@ -432,29 +460,114 @@ void run_scheduling_simulation() {
     thread_print_statistics();
 }
 
+// 解析代码内容以确定调度参数
+void parse_code_for_scheduling(const char* input_code, schedule_algorithm_t* algorithm, int* time_quantum, thread_info_t** tasks, int* task_count) {
+    *algorithm = SCHEDULE_RR; // 默认时间片轮转
+    *time_quantum = 2;
+    *task_count = 0;
+    
+    if (!input_code || strlen(input_code) == 0) {
+        printf("错误: 请输入线程调度代码\n");
+        return;
+    }
+    
+    // 分析代码内容，提取调度信息
+    if (strstr(input_code, "FCFS") || strstr(input_code, "先来先服务")) {
+        *algorithm = SCHEDULE_FCFS;
+        printf("检测到FCFS调度算法\n");
+    } else if (strstr(input_code, "SJF") || strstr(input_code, "最短作业")) {
+        *algorithm = SCHEDULE_SJF;
+        printf("检测到SJF调度算法\n");
+    } else if (strstr(input_code, "优先级") || strstr(input_code, "priority")) {
+        *algorithm = SCHEDULE_PRIORITY;
+        printf("检测到优先级调度算法\n");
+    } else if (strstr(input_code, "时间片") || strstr(input_code, "轮转") || strstr(input_code, "Round")) {
+        *algorithm = SCHEDULE_RR;
+        printf("检测到时间片轮转调度算法\n");
+    }
+    
+    // 根据代码内容创建不同的任务
+    if (strstr(input_code, "task_a") || strstr(input_code, "任务A")) {
+        tasks[(*task_count)++] = create_thread("任务A", 1, 4, NULL);
+    }
+    if (strstr(input_code, "task_b") || strstr(input_code, "任务B")) {
+        tasks[(*task_count)++] = create_thread("任务B", 2, 3, NULL);
+    }
+    if (strstr(input_code, "task_c") || strstr(input_code, "任务C")) {
+        tasks[(*task_count)++] = create_thread("任务C", 1, 2, NULL);
+    }
+    
+    // 检测高优先级任务
+    if (strstr(input_code, "高优先级") || strstr(input_code, "high_priority")) {
+        tasks[(*task_count)++] = create_thread("高优先级任务", 5, 2, NULL);
+    }
+    if (strstr(input_code, "中优先级") || strstr(input_code, "medium_priority")) {
+        tasks[(*task_count)++] = create_thread("中优先级任务", 3, 4, NULL);
+    }
+    if (strstr(input_code, "低优先级") || strstr(input_code, "low_priority")) {
+        tasks[(*task_count)++] = create_thread("低优先级任务", 1, 6, NULL);
+    }
+    
+    // 检测不同长度的任务
+    if (strstr(input_code, "短任务") || strstr(input_code, "short_task")) {
+        tasks[(*task_count)++] = create_thread("短任务", 0, 2, NULL);
+    }
+    if (strstr(input_code, "长任务") || strstr(input_code, "long_task")) {
+        tasks[(*task_count)++] = create_thread("长任务", 0, 8, NULL);
+    }
+    if (strstr(input_code, "中等任务") || strstr(input_code, "medium_task")) {
+        tasks[(*task_count)++] = create_thread("中等任务", 0, 4, NULL);
+    }
+    
+    // 如果没有检测到任何任务，创建默认任务
+    if (*task_count == 0) {
+        printf("未检测到特定任务，使用默认任务集\n");
+        tasks[(*task_count)++] = create_thread("默认任务1", 1, 3, NULL);
+        tasks[(*task_count)++] = create_thread("默认任务2", 2, 4, NULL);
+        tasks[(*task_count)++] = create_thread("默认任务3", 1, 2, NULL);
+    }
+}
+
 // Emscripten导出的演示函数
 #ifdef __EMSCRIPTEN__
 EMSCRIPTEN_KEEPALIVE
 #endif
 void thread_demo(const char* input_code) {
     printf("=== 洛书线程调度演示 ===\n");
-    printf("输入代码:\n%s\n", input_code ? input_code : "无");
+    printf("分析输入代码...\n");
+    
+    if (!input_code || strlen(input_code) == 0) {
+        printf("错误: 请输入线程调度代码再运行演示\n");
+        printf("提示: 代码中应包含任务定义和调度算法信息\n");
+        return;
+    }
+    
+    printf("输入代码:\n%s\n", input_code);
     printf("========================\n");
     
-    // 初始化调度器 - 使用时间片轮转算法
-    init_scheduler(SCHEDULE_RR, 2);
+    // 解析代码内容
+    schedule_algorithm_t algorithm;
+    int time_quantum;
+    thread_info_t* tasks[10];
+    int task_count;
     
-    // 创建示例线程
-    thread_info_t* thread1 = create_thread("线程A", 1, 4, NULL);
-    thread_info_t* thread2 = create_thread("线程B", 2, 3, NULL);
-    thread_info_t* thread3 = create_thread("线程C", 1, 2, NULL);
-    thread_info_t* thread4 = create_thread("线程D", 3, 5, NULL);
+    parse_code_for_scheduling(input_code, &algorithm, &time_quantum, tasks, &task_count);
     
-    // 添加线程到调度器
-    add_thread_to_scheduler(thread1);
-    add_thread_to_scheduler(thread2);
-    add_thread_to_scheduler(thread3);
-    add_thread_to_scheduler(thread4);
+    if (task_count == 0) {
+        printf("错误: 未能从代码中解析出有效的任务\n");
+        return;
+    }
+    
+    // 初始化调度器
+    init_scheduler(algorithm, time_quantum);
+    
+    // 添加解析出的线程到调度器
+    // 方案1：所有线程同时到达（避免复杂的到达时间逻辑）
+    for (int i = 0; i < task_count; i++) {
+        // 保持所有线程的到达时间为0，确保响应时间计算正确
+        tasks[i]->arrival_time = 0;
+        add_thread_to_scheduler(tasks[i]);
+    }
     
     // 运行调度模拟
     run_scheduling_simulation();

@@ -1,0 +1,40 @@
+# FCFS (先来先服务) 调度演示
+# 任务按照到达顺序执行，不可抢占
+
+async def task_a():
+    print("任务A开始 (到达时间: 0, 执行时间: 4)")
+    for i in range(4):
+        print(f"任务A执行第 {i+1} 个时间片")
+        yield
+    print("任务A完成")
+
+async def task_b():
+    print("任务B开始 (到达时间: 1, 执行时间: 3)")
+    for i in range(3):
+        print(f"任务B执行第 {i+1} 个时间片")
+        yield
+    print("任务B完成")
+
+async def task_c():
+    print("任务C开始 (到达时间: 2, 执行时间: 2)")
+    for i in range(2):
+        print(f"任务C执行第 {i+1} 个时间片")
+        yield
+    print("任务C完成")
+
+async def main():
+    print("=== FCFS (先来先服务) 调度演示 ===")
+    print("任务将按照到达顺序依次执行")
+    print("执行顺序: 任务A -> 任务B -> 任务C")
+    print("")
+    
+    # FCFS调度：按到达顺序执行
+    await task_a()
+    await task_b()
+    await task_c()
+    
+    print("")
+    print("=== FCFS调度演示完成 ===")
+    print("先来先服务调度简单但可能造成长作业等待")
+
+main()
