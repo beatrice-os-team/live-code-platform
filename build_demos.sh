@@ -115,6 +115,22 @@ else
 fi
 cd "${SCRIPT_DIR}"
 
+echo "7. 编译线程调度模块..."
+cd losu/thread
+# 线程调度模块独立编译，不依赖Losu源码以避免符号冲突
+emcc main.c \
+     -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s EXPORT_NAME="LosuThread" \
+     -s EXPORTED_FUNCTIONS="['_thread_demo', '_demo_fcfs', '_demo_sjf', '_demo_priority', '_demo_round_robin', '_run', '_default_demo', '_malloc', '_free']" \
+     -s EXPORTED_RUNTIME_METHODS="['lengthBytesUTF8', 'stringToUTF8']" \
+     -s ALLOW_MEMORY_GROWTH=1 \
+     -o ../../www/assets/wasm/thread.m.js
+if [ $? -eq 0 ]; then
+    echo "   ✓ 线程调度模块编译完成"
+else
+    echo "   ✗ 线程调度模块编译失败"
+fi
+cd "${SCRIPT_DIR}"
+
 echo ""
 echo "所有模块编译完成！"
 echo "编译后的WASM文件位于: www/assets/wasm/"
@@ -127,4 +143,5 @@ echo "   - 语法分析: http://localhost:8080/pages/parser.html"
 echo "   - 语义分析: http://localhost:8080/pages/sema.html"  
 echo "   - 代码生成: http://localhost:8080/pages/codegen.html"
 echo "   - 内存管理: http://localhost:8080/pages/memory.html"
-echo "   - 文件系统: http://localhost:8080/pages/filesystem.html" 
+echo "   - 文件系统: http://localhost:8080/pages/filesystem.html"
+echo "   - 线程调度: http://localhost:8080/pages/thread.html" 

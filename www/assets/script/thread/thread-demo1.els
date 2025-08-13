@@ -1,0 +1,38 @@
+// 基础线程调度演示
+// 展示多个任务的并发执行
+
+async def task_producer():
+    print("生产者任务开始")
+    for i in range(5):
+        print(f"生产商品 {i+1}")
+        yield  // 让出CPU
+    print("生产者任务完成")
+
+async def task_consumer():
+    print("消费者任务开始")
+    for i in range(3):
+        print(f"消费商品 {i+1}")
+        yield  // 让出CPU
+    print("消费者任务完成")
+
+async def task_monitor():
+    print("监控任务开始")
+    for i in range(4):
+        print(f"监控系统状态 {i+1}")
+        yield  // 让出CPU
+    print("监控任务完成")
+
+// 主函数，启动多个并发任务
+async def main():
+    print("=== 线程调度演示开始 ===")
+    print("启动多个并发任务...")
+    
+    // 创建并发任务
+    await task_producer()
+    await task_consumer()
+    await task_monitor()
+    
+    print("=== 所有任务执行完成 ===")
+
+// 执行主函数
+main()

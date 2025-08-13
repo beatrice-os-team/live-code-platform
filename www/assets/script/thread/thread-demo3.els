@@ -1,0 +1,54 @@
+// 时间片轮转调度演示
+// 每个任务轮流执行固定时间片
+
+async def web_server_task():
+    print("Web服务器任务 (时间片轮转)")
+    for i in range(6):
+        print(f"处理HTTP请求 {i+1}")
+        yield  // 时间片结束，切换到其他任务
+    print("Web服务器任务暂停")
+
+async def database_task():
+    print("数据库任务 (时间片轮转)")
+    for i in range(4):
+        print(f"执行数据库查询 {i+1}")
+        yield  // 时间片结束，切换到其他任务
+    print("数据库任务暂停")
+
+async def file_io_task():
+    print("文件I/O任务 (时间片轮转)")
+    for i in range(5):
+        print(f"读写文件操作 {i+1}")
+        yield  // 时间片结束，切换到其他任务
+    print("文件I/O任务暂停")
+
+async def cache_task():
+    print("缓存管理任务 (时间片轮转)")
+    for i in range(3):
+        print(f"更新缓存 {i+1}")
+        yield  // 时间片结束，切换到其他任务
+    print("缓存管理任务暂停")
+
+async def main():
+    print("=== 时间片轮转调度演示 ===")
+    print("时间片大小: 2个时间单位")
+    print("每个任务轮流执行，公平分配CPU时间")
+    print("")
+    
+    // 模拟时间片轮转：所有任务并发执行
+    tasks = [
+        web_server_task(),
+        database_task(),
+        file_io_task(),
+        cache_task()
+    ]
+    
+    // 轮转执行所有任务
+    for task in tasks:
+        await task
+    
+    print("")
+    print("=== 时间片轮转调度演示完成 ===")
+    print("所有任务均获得公平的CPU时间分配")
+
+main()

@@ -1,0 +1,46 @@
+// 优先级调度演示
+// 不同优先级的任务调度
+
+async def high_priority_task():
+    print("【高优先级】紧急任务开始 (优先级: 5)")
+    for i in range(2):
+        print(f"【高优先级】处理紧急事务 {i+1}")
+        yield
+    print("【高优先级】紧急任务完成")
+
+async def normal_priority_task():
+    print("【普通优先级】常规任务开始 (优先级: 3)")
+    for i in range(4):
+        print(f"【普通优先级】处理常规事务 {i+1}")
+        yield
+    print("【普通优先级】常规任务完成")
+
+async def low_priority_task():
+    print("【低优先级】后台任务开始 (优先级: 1)")
+    for i in range(6):
+        print(f"【低优先级】后台处理 {i+1}")
+        yield
+    print("【低优先级】后台任务完成")
+
+async def cleanup_task():
+    print("【清理任务】系统清理开始 (优先级: 2)")
+    for i in range(3):
+        print(f"【清理任务】清理操作 {i+1}")
+        yield
+    print("【清理任务】系统清理完成")
+
+async def main():
+    print("=== 优先级调度演示 ===")
+    print("任务将根据优先级进行调度")
+    print("优先级: 5(最高) > 3(普通) > 2(清理) > 1(最低)")
+    print("")
+    
+    // 按优先级顺序执行
+    await high_priority_task()
+    await normal_priority_task()
+    await cleanup_task()
+    await low_priority_task()
+    
+    print("=== 优先级调度演示完成 ===")
+
+main()

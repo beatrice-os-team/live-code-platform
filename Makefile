@@ -35,6 +35,7 @@ clean-demos:
 	rm -f www/assets/wasm/codegen.m.js www/assets/wasm/codegen.m.wasm
 	rm -f www/assets/wasm/memory.m.js www/assets/wasm/memory.m.wasm
 	rm -f www/assets/wasm/filesystem.m.js www/assets/wasm/filesystem.m.wasm
+	rm -f www/assets/wasm/thread.m.js www/assets/wasm/thread.m.wasm
 	@echo "清理完成"
 
 # 运行并构建演示模块
@@ -58,6 +59,7 @@ help:
 	@echo "  - 代码生成 (CodeGen): http://localhost:8080/pages/codegen.html"
 	@echo "  - 内存管理 (Memory): http://localhost:8080/pages/memory.html"
 	@echo "  - 文件系统 (FileSystem): http://localhost:8080/pages/filesystem.html"
+	@echo "  - 线程调度 (Thread): http://localhost:8080/pages/thread.html"
 	@echo ""
 	@echo "注意: 如果没有安装 Emscripten，系统将使用现有的 WASM 模块"
 
