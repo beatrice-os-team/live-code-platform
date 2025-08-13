@@ -1,38 +1,38 @@
-// 基础线程调度演示
-// 展示多个任务的并发执行
+# 基础线程调度演示 - 时间片轮转调度
+# 展示多个任务的并发执行
 
-async def task_producer():
-    print("生产者任务开始")
-    for i in range(5):
-        print(f"生产商品 {i+1}")
-        yield  // 让出CPU
-    print("生产者任务完成")
-
-async def task_consumer():
-    print("消费者任务开始")
-    for i in range(3):
-        print(f"消费商品 {i+1}")
-        yield  // 让出CPU
-    print("消费者任务完成")
-
-async def task_monitor():
-    print("监控任务开始")
+async def task_a():
+    print("任务A开始执行")
     for i in range(4):
-        print(f"监控系统状态 {i+1}")
-        yield  // 让出CPU
-    print("监控任务完成")
+        print(f"任务A执行步骤 {i+1}")
+        yield  # 让出CPU
+    print("任务A执行完成")
 
-// 主函数，启动多个并发任务
+async def task_b():
+    print("任务B开始执行")
+    for i in range(3):
+        print(f"任务B执行步骤 {i+1}")
+        yield  # 让出CPU
+    print("任务B执行完成")
+
+async def task_c():
+    print("任务C开始执行")
+    for i in range(2):
+        print(f"任务C执行步骤 {i+1}")
+        yield  # 让出CPU
+    print("任务C执行完成")
+
+# 主函数，使用时间片轮转调度
 async def main():
-    print("=== 线程调度演示开始 ===")
-    print("启动多个并发任务...")
+    print("=== 时间片轮转调度演示开始 ===")
+    print("每个任务轮流执行，公平分配CPU时间")
     
-    // 创建并发任务
-    await task_producer()
-    await task_consumer()
-    await task_monitor()
+    # 创建并发任务 - 时间片轮转调度
+    await task_a()
+    await task_b()
+    await task_c()
     
-    print("=== 所有任务执行完成 ===")
+    print("=== 时间片轮转调度演示完成 ===")
 
-// 执行主函数
+# 执行主函数
 main()
