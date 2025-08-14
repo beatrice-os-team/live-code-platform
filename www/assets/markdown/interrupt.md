@@ -21,393 +21,157 @@
 - **了解协程与中断的关系**：理解协程如何模拟中断处理机制
 - **体验事件驱动编程**：通过实际代码体验事件驱动的程序设计
 
-### 实验内容
+### 实验功能
 
-#### 1. 中断处理基本概念
+#### 1. 交互式中断触发
 
-**中断类型**
-- **硬件中断**：由硬件设备触发的异步事件
-  - 时钟中断：定时器产生的周期性中断
-  - I/O中断：输入输出设备完成操作时的通知
-  - 键盘中断：用户按键时产生的中断
-- **软件中断**：由程序主动触发的同步事件
-  - 系统调用：用户程序请求操作系统服务
-  - 异常处理：程序错误或特殊条件的处理
-  - 信号处理：进程间通信的机制
+**支持的中断类型：**
+- **SIGINT** (优先级：高) - 程序中断信号 (Ctrl+C)
+- **SIGTERM** (优先级：高) - 程序终止信号
+- **SIGUSR1/SIGUSR2** (优先级：普通) - 用户定义信号
+- **SIGALRM** (优先级：高) - 定时器信号
+- **TIMER** (优先级：高) - 时钟中断
+- **I/O** (优先级：普通) - I/O操作完成中断
+- **KEYBOARD** (优先级：普通) - 键盘输入中断
+- **NETWORK** (优先级：普通) - 网络数据中断
+- **EXCEPTION** (优先级：关键) - 异常处理中断
+- **SYSCALL** (优先级：高) - 系统调用中断
 
-**中断处理过程**
-1. **中断发生**：外部事件或内部条件触发中断
-2. **保存上下文**：保存当前程序的执行状态
-3. **中断识别**：确定中断源和中断类型
-4. **中断处理**：执行相应的中断服务程序
-5. **恢复上下文**：恢复被中断程序的执行状态
-6. **返回执行**：继续执行被中断的程序
+**操作方式：**
+1. 点击左侧面板中的中断按钮直接触发对应中断
+2. 每个按钮显示中断名称、描述和优先级信息
+3. 实时查看中断处理过程和系统状态变化
 
-#### 2. 洛书虚拟机的中断模拟
+#### 2. 优先级管理
 
-**协程中断机制**
-洛书虚拟机通过协程的 `yield` 机制模拟中断处理：
+**优先级级别：**
+- **关键 (1)** - 最高优先级，可打断所有其他中断
+- **高 (2)** - 高优先级，可打断普通和低优先级中断
+- **普通 (3)** - 普通优先级，可打断低优先级中断
+- **低 (4)** - 最低优先级，容易被其他中断打断
 
-```losu
-# 协程模拟中断处理
-async def interrupt_handler(interrupt_type, data):
-    print(f"处理中断: {interrupt_type}")
-    # 执行中断处理逻辑
-    yield  # 让出控制权，模拟中断处理时间
-    print(f"中断处理完成: {interrupt_type}")
+**功能特性：**
+- 动态调整系统当前优先级阈值
+- 低优先级中断在高优先级环境下会被阻塞
+- 优先级降低时自动处理待处理的中断队列
 
-# 主程序
-async def main_program():
-    for i in 1, 10:
-        print(f"主程序执行: 步骤 {i}")
-        
-        # 模拟中断发生
-        if i % 3 == 0:
-            async interrupt_handler("TIMER", i)
-        
-        yield  # 协作式多任务
+#### 3. 程序执行模拟
+
+**模拟特性：**
+- 可配置执行步数的程序运行模拟
+- 在程序执行过程中自动触发各种中断
+- 展示中断与程序执行的交互过程
+- 支持中断导致的程序终止处理
+
+**时序设计：**
+- 每10步检查一次定时器中断
+- 每25步模拟I/O操作完成
+- 每50步模拟键盘输入事件
+- 第15步模拟用户Ctrl+C操作
+
+#### 4. 系统状态监控
+
+**实时状态显示：**
+- 中断系统启用/禁用状态
+- 当前系统优先级设置
+- 程序运行状态和计数器
+- 各中断类型的启用状态和待处理状态
+
+**统计信息：**
+- 总中断处理次数
+- 成功处理和被阻塞的中断数量
+- 平均中断处理时间
+- 中断处理栈的状态信息
+
+#### 5. 演示场景
+
+**场景1：中断优先级演示**
+```
+展示不同优先级中断的处理顺序和嵌套处理机制
 ```
 
-**事件驱动模型**
-```losu
-class EventSystem:
-    def __init__(self):
-        self.handlers = {}
-        self.event_queue = []
-    
-    def register_handler(self, event_type, handler):
-        if event_type not in self.handlers:
-            self.handlers[event_type] = []
-        self.handlers[event_type].append(handler)
-    
-    def trigger_event(self, event_type, data):
-        self.event_queue.append({"type": event_type, "data": data})
-    
-    async def process_events(self):
-        while self.event_queue.length() > 0:
-            let event = self.event_queue.pop(0)
-            await self.handle_event(event.type, event.data)
-            yield
-    
-    async def handle_event(self, event_type, data):
-        if event_type in self.handlers:
-            for handler in self.handlers[event_type]:
-                await handler(data)
-                yield
+**场景2：异常处理演示**
+```
+模拟除零、空指针、数组越界等异常的处理流程
 ```
 
-#### 3. 中断处理实验场景
-
-**时钟中断模拟**
-```losu
-import time
-
-class TimerInterrupt:
-    def __init__(self, interval):
-        self.interval = interval
-        self.last_time = time::now()
-        self.tick_count = 0
-    
-    def check_interrupt(self):
-        let current_time = time::now()
-        if current_time - self.last_time >= self.interval:
-            self.last_time = current_time
-            return true
-        return false
-    
-    async def timer_handler(self):
-        self.tick_count += 1
-        print(f"时钟中断 #{self.tick_count} - 时间: {time::now()}")
-        yield
-
-# 使用时钟中断
-let timer = TimerInterrupt(1000)  # 1秒间隔
-
-async def main_with_timer():
-    for i in 1, 20:
-        print(f"主程序工作: {i}")
-        
-        # 检查时钟中断
-        if timer.check_interrupt():
-            async timer.timer_handler()
-        
-        yield
+**场景3：系统调用演示**
 ```
-
-**I/O中断模拟**
-```losu
-class IODevice:
-    def __init__(self, name):
-        self.name = name
-        self.busy = false
-        self.completion_time = null
-    
-    def start_operation(self, duration):
-        self.busy = true
-        self.completion_time = time::now() + duration
-        print(f"{self.name} 开始 I/O 操作，预计耗时 {duration}ms")
-    
-    def check_completion(self):
-        if self.busy and time::now() >= self.completion_time:
-            self.busy = false
-            return true
-        return false
-    
-    async def completion_handler(self, data):
-        print(f"{self.name} I/O 操作完成，数据: {data}")
-        yield
-
-# I/O中断处理示例
-async def io_interrupt_demo():
-    let disk = IODevice("磁盘")
-    let network = IODevice("网络")
-    
-    # 启动I/O操作
-    disk.start_operation(2000)
-    network.start_operation(1500)
-    
-    let step = 0
-    while disk.busy or network.busy:
-        step += 1
-        print(f"CPU执行其他任务: 步骤 {step}")
-        
-        # 检查I/O完成中断
-        if disk.check_completion():
-            async disk.completion_handler("文件数据")
-        
-        if network.check_completion():
-            async network.completion_handler("网络数据包")
-        
-        yield
+演示文件操作、内存分配、进程创建等系统调用的中断处理
 ```
-
-**信号处理模拟**
-```losu
-class SignalSystem:
-    def __init__(self):
-        self.signal_handlers = {}
-        self.pending_signals = []
-    
-    def register_signal(self, signal_type, handler):
-        self.signal_handlers[signal_type] = handler
-    
-    def send_signal(self, signal_type, data=null):
-        self.pending_signals.append({
-            "type": signal_type,
-            "data": data,
-            "timestamp": time::now()
-        })
-    
-    async def process_signals(self):
-        while self.pending_signals.length() > 0:
-            let signal = self.pending_signals.pop(0)
-            await self.handle_signal(signal)
-            yield
-    
-    async def handle_signal(self, signal):
-        print(f"处理信号: {signal.type}")
-        if signal.type in self.signal_handlers:
-            await self.signal_handlers[signal.type](signal.data)
-        yield
-
-# 信号处理示例
-async def signal_handler_demo():
-    let signal_system = SignalSystem()
-    
-    # 注册信号处理器
-    signal_system.register_signal("SIGTERM", async def(data):
-        print("收到终止信号，开始清理...")
-        yield
-    )
-    
-    signal_system.register_signal("SIGUSR1", async def(data):
-        print(f"收到用户信号1: {data}")
-        yield
-    )
-    
-    # 模拟程序运行
-    for i in 1, 10:
-        print(f"程序运行: {i}")
-        
-        # 模拟信号发送
-        if i == 3:
-            signal_system.send_signal("SIGUSR1", "测试数据")
-        if i == 7:
-            signal_system.send_signal("SIGTERM")
-        
-        # 处理待处理的信号
-        async signal_system.process_signals()
-        yield
-```
-
-#### 4. 中断优先级和嵌套
-
-**优先级中断处理**
-```losu
-class PriorityInterruptSystem:
-    def __init__(self):
-        self.interrupt_queue = []
-        self.current_priority = 0
-    
-    def add_interrupt(self, type, priority, handler):
-        self.interrupt_queue.append({
-            "type": type,
-            "priority": priority,
-            "handler": handler,
-            "timestamp": time::now()
-        })
-        # 按优先级排序（优先级数字越小越高）
-        self.interrupt_queue.sort(key=lambda x: x.priority)
-    
-    async def process_interrupts(self):
-        while self.interrupt_queue.length() > 0:
-            let interrupt = self.interrupt_queue.pop(0)
-            
-            # 检查优先级是否足够高
-            if interrupt.priority <= self.current_priority:
-                print(f"处理高优先级中断: {interrupt.type} (优先级 {interrupt.priority})")
-                let old_priority = self.current_priority
-                self.current_priority = interrupt.priority
-                
-                await interrupt.handler()
-                
-                self.current_priority = old_priority
-                print(f"恢复到优先级: {old_priority}")
-            else:
-                # 优先级不够，重新加入队列
-                self.interrupt_queue.append(interrupt)
-                break
-            yield
-
-# 优先级中断示例
-async def priority_interrupt_demo():
-    let system = PriorityInterruptSystem()
-    
-    # 添加不同优先级的中断
-    system.add_interrupt("键盘", 3, async def():
-        print("处理键盘输入")
-        yield
-    )
-    
-    system.add_interrupt("网络", 2, async def():
-        print("处理网络数据包")
-        yield
-    )
-    
-    system.add_interrupt("时钟", 1, async def():
-        print("处理时钟中断")
-        yield
-    )
-    
-    # 处理中断队列
-    async system.process_interrupts()
-```
-
-#### 5. 异常处理机制
-
-**异常类型模拟**
-```losu
-class ExceptionHandler:
-    def __init__(self):
-        self.exception_handlers = {}
-    
-    def register_exception(self, exception_type, handler):
-        self.exception_handlers[exception_type] = handler
-    
-    async def handle_exception(self, exception_type, context):
-        print(f"发生异常: {exception_type}")
-        
-        if exception_type in self.exception_handlers:
-            await self.exception_handlers[exception_type](context)
-        else:
-            print(f"未处理的异常: {exception_type}")
-        yield
-
-# 异常处理示例
-async def exception_demo():
-    let handler = ExceptionHandler()
-    
-    # 注册异常处理器
-    handler.register_exception("DivideByZero", async def(context):
-        print("除零异常处理: 返回默认值")
-        context["result"] = 0
-        yield
-    )
-    
-    handler.register_exception("NullPointer", async def(context):
-        print("空指针异常处理: 创建默认对象")
-        context["object"] = {}
-        yield
-    )
-    
-    # 模拟异常发生
-    let context = {}
-    async handler.handle_exception("DivideByZero", context)
-    print(f"异常处理结果: {context.result}")
-```
-
-### 操作步骤
-
-1. **访问中断处理页面**：在主页侧边栏点击"中断处理"进入实验页面
-2. **了解中断类型**：学习不同类型中断的特点和处理方式
-3. **选择实验场景**：从预设的中断处理示例中选择，或编写自定义代码
-4. **执行中断模拟**：运行洛书代码，观察中断处理过程
-5. **监控中断状态**：查看中断处理的详细信息：
-   - 中断发生时间
-   - 处理优先级
-   - 执行时间
-   - 上下文切换开销
-6. **分析性能影响**：评估中断处理对程序性能的影响
-
-### 实验重点
-
-#### 中断机制理解
-- **异步性质**：理解中断的异步特性和处理方式
-- **上下文切换**：掌握中断时的状态保存和恢复
-- **优先级管理**：了解中断优先级的重要性
-
-#### 协程模拟
-- **协作式多任务**：通过 `yield` 实现控制权转移
-- **状态保持**：协程如何保持执行状态
-- **调度机制**：协程调度器的工作原理
-
-#### 事件驱动
-- **事件循环**：理解事件驱动编程模型
-- **回调机制**：掌握回调函数的使用
-- **异步处理**：学习异步编程的设计模式
 
 ### 技术实现
 
-- **协程调度器**：基于洛书虚拟机的协程调度机制
-- **事件队列**：实现事件的排队和处理
-- **优先级队列**：支持优先级中断处理
-- **状态管理**：维护中断处理的上下文状态
+#### C语言后端 (WASM)
+- **中断向量表**：定义12种不同类型的中断及其属性
+- **优先级调度器**：实现基于优先级的中断调度算法
+- **上下文管理**：使用 `setjmp/longjmp` 模拟上下文切换
+- **统计模块**：记录中断处理的各种性能指标
 
-### 中断处理优化
+#### JavaScript前端
+- **WASM模块加载**：异步加载和初始化中断处理模块
+- **交互界面**：提供直观的中断触发和状态展示界面
+- **实时输出**：捕获WASM模块的stdout输出并格式化显示
+- **事件绑定**：响应用户操作并调用对应的WASM函数
 
-**减少中断开销**
-- 中断合并：合并同类型的多个中断
-- 延迟处理：将复杂处理推迟到中断处理程序之外
-- 硬件加速：利用硬件特性减少软件开销
+#### CSS样式设计
+- **现代化界面**：使用渐变背景和毛玻璃效果
+- **响应式布局**：支持不同屏幕尺寸的设备
+- **动画效果**：按钮点击和状态变化的动画反馈
+- **主题支持**：深色和浅色主题切换
 
-**提高响应性**
-- 短中断处理程序：保持中断处理程序简短
-- 优先级调度：根据重要性安排中断处理顺序
-- 预测性处理：预测可能的中断并提前准备
+### 操作指南
 
-### 实验价值
+#### 基础操作
+1. **初始化系统**：点击"初始化中断系统"开始使用
+2. **触发中断**：点击左侧面板中的任意中断按钮
+3. **调整优先级**：使用优先级控制按钮改变系统优先级
+4. **查看状态**：点击"显示系统状态"查看详细信息
 
-通过中断处理实验，学生将：
-- 深入理解操作系统的中断处理机制
-- 掌握事件驱动编程的基本技巧
-- 了解异步编程和协程的工作原理
-- 学会设计响应式的系统架构
+#### 高级功能
+1. **程序模拟**：设置执行步数并启动程序执行模拟
+2. **演示场景**：使用预设的演示脚本学习特定概念
+3. **系统控制**：启用/禁用整个中断系统或特定中断类型
+4. **重置系统**：恢复到初始状态重新开始实验
+
+#### 代码编辑
+1. **加载示例**：选择预设的演示代码进行学习
+2. **自定义代码**：在编辑器中编写自己的中断处理逻辑
+3. **实时输出**：在右侧面板查看程序执行结果
+4. **主题切换**：根据个人喜好调整编辑器主题
+
+### 学习要点
+
+#### 中断机制理解
+- **异步性质**：中断的不可预测性和异步处理特点
+- **上下文切换**：程序状态的保存和恢复机制
+- **优先级管理**：不同优先级中断的调度策略
+
+#### 系统设计原则
+- **响应性**：快速响应高优先级中断
+- **公平性**：确保低优先级中断最终得到处理
+- **可靠性**：异常情况下的系统稳定性
+
+#### 性能优化
+- **中断延迟**：减少中断响应时间
+- **处理效率**：优化中断处理程序的执行速度
+- **资源管理**：合理分配系统资源避免冲突
 
 ### 扩展思考
 
-1. **中断与轮询的权衡**：何时使用中断，何时使用轮询
-2. **实时系统设计**：如何在实时系统中保证中断响应时间
-3. **多核系统中断**：多核环境下的中断分发和处理
-4. **虚拟化中断**：虚拟机环境下的中断虚拟化技术
+1. **实时系统设计**：如何在实时系统中保证中断响应时间？
+2. **多核中断处理**：多核环境下如何分发和处理中断？
+3. **虚拟化中断**：虚拟机中的中断虚拟化技术如何实现？
+4. **中断与轮询**：何时使用中断机制，何时使用轮询机制？
+5. **嵌入式系统**：资源受限环境下的中断处理策略？
 
-通过本实验，学生将全面了解中断处理的设计原理和实现技术，为系统编程和实时应用开发奠定基础。 
+### 实验价值
+
+通过本中断处理实验，学习者将：
+- 深入理解操作系统中断处理的工作原理
+- 掌握优先级调度和上下文切换的实现技术
+- 学会设计响应式和可靠的系统架构
+- 了解异常处理和系统调用的内部机制
+- 培养系统级编程和调试的实践能力
+
+本实验结合理论学习和实践操作，为学习者提供了一个全面了解中断处理机制的平台，有助于建立扎实的系统编程基础。
