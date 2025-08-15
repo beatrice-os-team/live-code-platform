@@ -1,5 +1,4 @@
 def greet(name):
-    let message = "Hello, " + name + "!"
     print(message)
     return message
 
