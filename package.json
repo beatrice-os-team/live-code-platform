@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "express": "^4.21.2",
-    "highlight.js": "^10.7.3",
+    "highlight.js": "^11.11.1",
     "marked": "^15.0.12"
   }
 }
