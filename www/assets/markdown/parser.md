@@ -142,11 +142,6 @@ for i in 1,10:
 numbers |> map(lambda x: x * x) |> filter(lambda x: x > 10) |> list
 ```
 
-**特殊赋值运算符**
-```losu
-let sum :: x + y    # :: 运算符用于特殊赋值
-```
-
 **多重赋值和解包**
 ```losu
 let a, b = calculate(x, y)    # 多重赋值

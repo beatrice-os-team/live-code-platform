@@ -215,7 +215,7 @@ EMSCRIPTEN_KEEPALIVE void lexer_demo(const char* input) {
 
     printf("\n=== 词法分析完成 ===\n");
     printf("总共识别了 %d 个Token\n", token_count);
-    printf("总行数: %d\n", line);
+    printf("总行数: %d\n\n\n", line);
 
     // 清理资源
     vm_close(vm);

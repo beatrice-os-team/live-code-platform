@@ -242,7 +242,7 @@ class MLFQScheduler(Scheduler):
         super().__init__()
         self.num_levels = num_levels
         self.time_quanta = time_quanta
-        self.queues = [[] for i in range(num_levels)]
+        self.queues = [[] for i 1, num_levels]
         self.current_level = 0
         self.current_quantum = 0
     
@@ -264,7 +264,7 @@ class MLFQScheduler(Scheduler):
         
         # 选择新任务执行
         if not self.running:
-            for level in range(self.num_levels):
+            for level in 1, self.num_levels:
                 if self.queues[level].length() > 0:
                     self.running = self.queues[level].pop(0)
                     self.running.state = "running"

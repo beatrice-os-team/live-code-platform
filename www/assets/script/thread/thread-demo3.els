@@ -3,21 +3,21 @@
 
 async def 短任务():
     print("短任务开始 (执行时间: 2)")
-    for i in range(2):
+    for i in 1, 2:
         print(f"短任务执行第 {i+1} 步")
         yield
     print("短任务完成")
 
 async def 长任务():
     print("长任务开始 (执行时间: 8)")
-    for i in range(8):
+    for i in 1, 8:
         print(f"长任务执行第 {i+1} 步")
         yield
     print("长任务完成")
 
 async def 中等任务():
     print("中等任务开始 (执行时间: 4)")
-    for i in range(4):
+    for i in 1, 4:
         print(f"中等任务执行第 {i+1} 步")
         yield
     print("中等任务完成")

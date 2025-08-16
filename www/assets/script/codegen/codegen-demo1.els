@@ -10,10 +10,10 @@ def calculate():
     let sum = add(x, y)
     let product = multiply(x, y)
     
-    print("x = " + str(x))
-    print("y = " + str(y))
-    print("x + y = " + str(sum))
-    print("x * y = " + str(product))
+    print("x = " & str(x))
+    print("y = " & str(y))
+    print("x + y = " & str(sum))
+    print("x * y = " & str(product))
     
     if sum > product:
         print("和大于积")

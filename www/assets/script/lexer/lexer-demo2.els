@@ -35,7 +35,7 @@ let logic_not = not true          # 逻辑非
 
 # 函数定义和调用
 def calculate(x, y):
-    let sum :: x + y              # 洛书特有的赋值运算符
+    let sum = x + y
     let product = x * y
     return sum, product
 
@@ -61,20 +61,5 @@ for i in 1, 10:
     else:
         print("奇数:", i)
 
-# 异步编程示例
-async def async_task(id):
-    print("任务", id, "开始执行")
-    yield
-    print("任务", id, "执行完成")
-
-# 异常处理
-def safe_divide(a, b):
-    if b == 0:
-        raise "除零错误"
-    return a / b
-
-# 管道运算符示例
-let numbers = [1, 2, 3, 4, 5]
-let squared = numbers |> map(lambda x: x * x) |> list
 
 print("词法分析演示完成！")

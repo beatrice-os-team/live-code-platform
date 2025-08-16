@@ -6,12 +6,12 @@ def inefficient_memory_usage():
     
     # 低效方式1：重复创建大字符串
     let result = ""
-    for i in range(100):
+    for i in 1, 100:
         result = result + "Item " + str(i) + ", "
     
     # 低效方式2：创建不必要的临时对象
     let temp_arrays = []
-    for i in range(50):
+    for i in 1, 50:
         let temp = [i, i*2, i*3]
         temp_arrays.push(temp)
         # 这里立即丢弃引用，但对象还在内存中
@@ -23,7 +23,7 @@ def efficient_memory_usage():
     
     # 高效方式1：使用数组拼接字符串
     let parts = []
-    for i in range(100):
+    for i in 1, 100:
         parts.push("Item " + str(i))
     let result = join(parts, ", ")
     
@@ -31,7 +31,7 @@ def efficient_memory_usage():
     let reusable_array = [0, 0, 0]
     let results = []
     
-    for i in range(50):
+    for i in 1, 50:
         reusable_array[0] = i
         reusable_array[1] = i * 2
         reusable_array[2] = i * 3
@@ -47,7 +47,7 @@ def memory_pool_example():
     let object_pool = []
     
     # 预分配对象
-    for i in range(10):
+    for i in 1, 10:
         object_pool.push({
             "id": -1,
             "data": "",
@@ -57,7 +57,7 @@ def memory_pool_example():
     # 使用对象池
     let active_objects = []
     
-    for i in range(20):
+    for i in 1, 20:
         let obj = null
         
         # 尝试从池中获取对象

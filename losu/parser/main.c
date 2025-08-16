@@ -181,7 +181,7 @@ EMSCRIPTEN_KEEPALIVE void parser_demo(const char* input) {
     }
 
     printf("\n=== 语法分析完成 ===\n");
-    printf("总行数: %d\n", line - 1);
+    printf("总行数: %d\n\n\n", line - 1);
 
     // 清理资源
     vm_close(vm);

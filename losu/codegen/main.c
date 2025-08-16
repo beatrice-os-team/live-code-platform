@@ -247,7 +247,7 @@ EMSCRIPTEN_KEEPALIVE void codegen_demo(const char* input) {
         printf("  💡 优化建议: 代码较长，可考虑函数拆分\n");
     }
 
-    printf("\n=== 代码生成完成 ===\n");
+    printf("\n=== 代码生成完成 ===\n\n\n");
 
     // 清理资源
     vm_close(vm);

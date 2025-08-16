@@ -3,21 +3,21 @@
 
 async def 高优先级():
     print("【高优先级】紧急任务开始 (优先级: 5)")
-    for i in range(2):
+    for i in 1, 2:
         print(f"【高优先级】处理紧急事务 {i+1}")
         yield
     print("【高优先级】紧急任务完成")
 
 async def 中优先级():
     print("【中优先级】常规任务开始 (优先级: 3)")
-    for i in range(4):
+    for i in 1, 4:
         print(f"【中优先级】处理常规事务 {i+1}")
         yield
     print("【中优先级】常规任务完成")
 
 async def 低优先级():
     print("【低优先级】后台任务开始 (优先级: 1)")
-    for i in range(6):
+    for i in 1, 6:
         print(f"【低优先级】后台处理 {i+1}")
         yield
     print("【低优先级】后台任务完成")

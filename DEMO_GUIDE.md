@@ -91,7 +91,7 @@ def fibonacci(n):
 
 def main():
     let count = 10
-    for i in range(count):
+    for i 1, count:
         let result = fibonacci(i)
         print("fibonacci(" + str(i) + ") = " + str(result))
 ```

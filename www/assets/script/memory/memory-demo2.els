@@ -7,10 +7,10 @@ def create_large_objects():
     # 创建多个大数组
     let arrays = []
     
-    for i in range(20):
+    for i in 1, 20:
         # 创建包含大量元素的数组
         let large_array = []
-        for j in range(100):
+        for j in 1, 100:
             large_array.push(i * 100 + j)
         
         arrays.push(large_array)
@@ -25,7 +25,7 @@ def create_string_objects():
     
     let strings = []
     
-    for i in range(50):
+    for i in 1, 50:
         let long_string = "这是第" + str(i) + "个字符串，包含重复内容：" + 
                          "重复" * 10 + "内容" + str(i)
         strings.push(long_string)
