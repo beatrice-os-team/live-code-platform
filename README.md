@@ -109,7 +109,7 @@ make help
     - 文件系统：
         - WASM FS
     - 任务管理：
-        - 中断
+
         - 多线程
 
 
@@ -148,7 +148,7 @@ make help
     |- codegen.html     # codegen - 代码生成实验 ✨
     |- memory.html      # memory - 内存管理实验
     |- filesystem.html  # filesystem - 文件系统实验
-    |- interrupt.html   # interrupt - 中断实验
+
     |- thread.html      # thread - 线程实验
 
 ```

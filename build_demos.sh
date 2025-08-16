@@ -115,24 +115,7 @@ else
 fi
 cd "${SCRIPT_DIR}"
 
-echo "7. 编译中断处理模块..."
-cd losu/interrupt
-# 中断处理模块编译，包含Losu头文件但使用简化的导出函数
-INCLUDE_DIRS="-I ../include"
-emcc main.c ${INCLUDE_DIRS} \
-     -s WASM=1 -s MODULARIZE=1 -s SINGLE_FILE=1 -s EXPORT_NAME="LosuInterrupt" \
-     -s EXPORTED_FUNCTIONS="['_init_interrupt_system', '_start_long_program', '_execute_program_step', '_trigger_interrupt', '_force_stop_program', '_show_system_status', '_read_logs', '_clear_logs', '_demo_filesystem_operations', '_run', '_main', '_malloc', '_free']" \
-     -s EXPORTED_RUNTIME_METHODS="['lengthBytesUTF8', 'stringToUTF8']" \
-     -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 \
-     -o ../../www/assets/wasm/interrupt.m.js
-if [ $? -eq 0 ]; then
-    echo "   ✓ 中断处理模块编译完成"
-else
-    echo "   ✗ 中断处理模块编译失败"
-fi
-cd "${SCRIPT_DIR}"
-
-echo "8. 编译线程调度模块..."
+echo "7. 编译线程调度模块..."
 cd losu/thread
 # 线程调度模块独立编译，不依赖Losu源码以避免符号冲突
 emcc main.c \
@@ -161,5 +144,4 @@ echo "   - 语义分析: http://localhost:8080/pages/sema.html"
 echo "   - 代码生成: http://localhost:8080/pages/codegen.html"
 echo "   - 内存管理: http://localhost:8080/pages/memory.html"
 echo "   - 文件系统: http://localhost:8080/pages/filesystem.html"
-echo "   - 中断处理: http://localhost:8080/pages/interrupt.html"
 echo "   - 线程调度: http://localhost:8080/pages/thread.html" 
