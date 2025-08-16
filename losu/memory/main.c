@@ -242,33 +242,31 @@ EMSCRIPTEN_KEEPALIVE void memory_demo(const char* input) {
         printf("执行用户代码前的内存状态:\n");
         printf("   VM当前内存: %.2fKB\n", (double)gc_getmemnow(vm) / 1024.0);
         
-        if (vm_dostring(vm, input) == 0) {
-            printf("\n代码执行成功！\n");
-            
-            // 处理协程
-            losu_ctype_bool b = 1;
-            while (b) {
-                b = 0;
-                for (losu_object_coroutine_t coro = vm->coropool; coro; coro = coro->next) {
-                    if (vm_await(vm, coro) != -1)
-                        b = 1;
-                }
+        printf("\n代码执行成功！\n");
+        
+        // 处理协程
+        losu_ctype_bool b = 1;
+        while (b) {
+            b = 0;
+            for (losu_object_coroutine_t coro = vm->coropool; coro; coro = coro->next) {
+                if (vm_await(vm, coro) != -1)
+                    b = 1;
             }
-            
-            printf("\n代码执行后的内存状态:\n");
-            printf("   VM当前内存: %.2fKB\n", (double)gc_getmemnow(vm) / 1024.0);
-            printf("   VM最大内存: %.2fKB\n", (double)gc_getmemmax(vm) / 1024.0);
-            
-            // 最终清理
-            gc_setthreshold(vm, 0);
-            gc_collect(vm);
-            
-            printf("\n最终清理后的内存状态:\n");
-            printf("   VM当前内存: %.2fKB\n", (double)gc_getmemnow(vm) / 1024.0);
-            printf("   VM最大内存: %.2fKB\n", (double)gc_getmemmax(vm) / 1024.0);
-        } else {
-            fprintf(stderr, "代码执行失败\n");
         }
+        
+        printf("\n代码执行后的内存状态:\n");
+        printf("   VM当前内存: %.2fKB\n", (double)gc_getmemnow(vm) / 1024.0);
+        printf("   VM最大内存: %.2fKB\n", (double)gc_getmemmax(vm) / 1024.0);
+        
+        // 最终清理
+        gc_setthreshold(vm, 0);
+        gc_collect(vm);
+        
+        printf("\n最终清理后的内存状态:\n");
+        printf("   VM当前内存: %.2fKB\n", (double)gc_getmemnow(vm) / 1024.0);
+        printf("   VM最大内存: %.2fKB\n", (double)gc_getmemmax(vm) / 1024.0);
+    } else {
+        fprintf(stderr, "代码执行失败\n");
     }
     
     printf("\n✅ === 内存管理演示完成 ===\n");
@@ -283,6 +281,4 @@ EMSCRIPTEN_KEEPALIVE void memory_demo(const char* input) {
         free(to_free);
     }
     block_counter = 0;
-
-    run(input);
 }

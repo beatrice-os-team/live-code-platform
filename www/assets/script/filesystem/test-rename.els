@@ -1,27 +1,27 @@
-// 测试重命名功能修复
-// 验证重命名后原目录不会重新出现
+# 测试重命名功能修复
+# 验证重命名后原目录不会重新出现
 
 import fs
 
 print("=== 重命名功能测试 ===")
 
-// 1. 首先列出初始目录结构  
+# 1. 首先列出初始目录结构  
 print("\n1. 测试环境准备:")
 print("使用'列出目录'按钮查看 /demo 的初始结构")
 
-// 2. 创建一个测试目录
+# 2. 创建一个测试目录
 print("\n2. 创建测试目录:")
 fs.mkdir("/demo/test_rename_dir")
 fs.write("/demo/test_rename_dir/test_file.txt", "这是测试文件")
 print("✅ 创建了 /demo/test_rename_dir 和测试文件")
 
-// 3. 重命名说明
+# 3. 重命名说明
 print("\n3. 重命名测试步骤:")
 print("a) 使用'重命名目录'按钮")
 print("b) 原路径: /demo/test_rename_dir")  
 print("c) 新路径: /demo/renamed_test_dir")
 
-// 4. 验证说明
+# 4. 验证说明
 print("\n4. 验证步骤:")
 print("重命名后，使用'列出目录'按钮查看 /demo")
 print("应该只看到:")

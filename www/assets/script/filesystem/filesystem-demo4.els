@@ -1,11 +1,11 @@
-// 文件和目录管理高级演示
-// 展示重命名、目录信息、删除目录等功能
+# 文件和目录管理高级演示
+# 展示重命名、目录信息、删除目录等功能
 
 import fs
 
 print("=== 高级文件系统管理演示 ===")
 
-// 1. 创建测试目录结构
+# 1. 创建测试目录结构
 print("\n1. 创建测试目录结构:")
 fs.write("/demo/projects/project1/readme.txt", "这是项目1的说明文件")
 fs.write("/demo/projects/project1/main.txt", "这是项目1的主文件")
@@ -14,35 +14,35 @@ fs.write("/demo/temp/cache.txt", "这是临时缓存文件")
 fs.write("/demo/temp/log.txt", "这是临时日志文件")
 print("✅ 创建了复杂的目录结构")
 
-// 2. 文件重命名演示
+# 2. 文件重命名演示
 print("\n2. 文件重命名演示:")
 fs.rename("/demo/projects/project1/readme.txt", "/demo/projects/project1/README.md")
 print("✅ 将 readme.txt 重命名为 README.md")
 
-// 3. 目录重命名演示
+# 3. 目录重命名演示
 print("\n3. 目录重命名演示:")
 fs.rename("/demo/projects/project1", "/demo/projects/awesome-project")
 print("✅ 将 project1 重命名为 awesome-project")
 
-// 4. 查看目录结构
+# 4. 查看目录结构
 print("\n4. 查看重命名后的目录结构:")
 print("项目目录内容:")
-// 这里实际需要通过按钮操作来查看目录列表
+# 这里实际需要通过按钮操作来查看目录列表
 
-// 5. 备份重要文件
+# 5. 备份重要文件
 print("\n5. 创建备份:")
 let main_content = fs.read("/demo/projects/awesome-project/main.txt")
 fs.write("/demo/backup_main.txt", main_content)
 print("✅ 备份了重要文件")
 
-// 6. 清理临时文件
+# 6. 清理临时文件
 print("\n6. 清理临时文件:")
 fs.remove("/demo/temp/cache.txt")
 fs.remove("/demo/temp/log.txt")
 print("✅ 清理了临时文件")
 
-// 注意：删除目录需要通过删除目录按钮操作
-// 因为需要先确保目录为空
+# 注意：删除目录需要通过删除目录按钮操作
+# 因为需要先确保目录为空
 
 print("\n=== 高级文件系统管理演示完成 ===")
 print("💡 提示:")

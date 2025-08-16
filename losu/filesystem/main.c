@@ -644,18 +644,6 @@ EMSCRIPTEN_KEEPALIVE void filesystem_demo(const char* input) {
     printf("💡 提示: 可以在代码编辑器中使用 fs.read(), fs.write() 等函数\n");
     printf("🔍 支持的操作: read, write, append, rename, remove\n");
     
-    // 尝试执行用户代码
-    if (strstr(input, "fs.") != NULL) {
-        printf("\n=== 执行用户代码 ===\n");
-        if (vm_dostring(vm, input) == 0) {
-            printf("✅ 用户代码执行完成\n");
-        } else {
-            printf("❌ 用户代码执行失败\n");
-        }
-    }
-    
     // 清理资源
     vm_close(vm);
-
-    run(input);
 }

@@ -101,30 +101,30 @@
 
     <div class="editor">
         <div class="editor-code">
-            <textarea id="editor-code">// Losu 文件系统演示
-// 使用内置的 fs 模块进行文件操作
+            <textarea id="editor-code"># Losu 文件系统演示
+# 使用内置的 fs 模块进行文件操作
 
 import fs
 
-// 读取文件示例
+# 读取文件示例
 let content = fs.read("/demo/hello.txt")
 print("文件内容: " + content)
 
-// 写入文件示例
+# 写入文件示例
 fs.write("/demo/my_file.txt", "Hello from Losu!")
 print("文件写入完成")
 
-// 追加内容示例
+# 追加内容示例
 fs.append("/demo/my_file.txt", "\n这是追加的内容")
 print("内容追加完成")
 
-// 重命名文件示例
+# 重命名文件示例
 fs.rename("/demo/my_file.txt", "/demo/renamed_file.txt")
 print("文件重命名完成")
 
-// 删除文件示例
-// fs.remove("/demo/renamed_file.txt")
-// print("文件删除完成")</textarea>
+# 删除文件示例
+# fs.remove("/demo/renamed_file.txt")
+# print("文件删除完成")</textarea>
         </div>
         <div class="editor-result">
             <pre id="editor-result">🔧 文件系统演示模块已就绪
